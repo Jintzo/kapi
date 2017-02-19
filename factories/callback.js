@@ -9,19 +9,26 @@ module.exports = {
    * @param  {String} responseType the type of response (from constants)
    * @return {Object}              the callback object
    */
-  error (error, responseType) {
+  error (error) {
     // load error callback scheme
     let scheme = constants.callbacks.scheme_error
 
-    // set error (if defined)
-    if (error !== undefined && error !== '') {
-      scheme.data[0].attributes.error = error
+    // envelop error object into array if it is not an array yet
+    if (!Array.isArray(error)) {
+      error = [error]
     }
 
-    // set responseType (if defined)
-    if (responseType !== undefined && responseType !== '') {
-      scheme.data[0].type = responseType
+    // get error array length
+    const errorLength = error.length
+
+    // add default error and return if no errors were passed
+    if (errorLength === 0 || (errorLength === 1 && error[0] === undefined)) {
+      scheme.errors.push({ 'detail': constants.errors.unknown.text })
+      return scheme
     }
+
+    // add all passed errors
+    scheme.errors = error
 
     // return callback object
     return scheme
