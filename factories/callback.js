@@ -9,7 +9,7 @@ export default {
    * @param  {String} responseType the type of response (from constants)
    * @return {Object}              the callback object
    */
-  errorCallback (error, responseType) {
+  error (error, responseType) {
     // load error callback scheme
     let scheme = constants.callbacks.scheme_error
 
