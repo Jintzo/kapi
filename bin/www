@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-import configuration from './../conf/configuration'
+const constants = require('./../conf/constants')
 
 // load module dependencies
 var app = require('../app')
-var debug = require('debug')(configuration.general.name + ':server')
+var debug = require('debug')(constants.general.name + ':server')
 var http = require('http')
 
 // set correct port
