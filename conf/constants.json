@@ -3,6 +3,10 @@
     "name": "kapi"
   },
 
+  "database": {
+    "max_connections": 1000
+  },
+
   "responses": {
     "general": "response-general",
     "documentation": "documentation"
