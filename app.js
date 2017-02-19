@@ -2,6 +2,8 @@
 import express from 'express'
 import path from 'path'
 import logger from 'morgan'
+import constants from './conf/constants'
+import callbackFactory from './factories/callback'
 
 // initialize app
 var app = express()
@@ -27,21 +29,9 @@ app.use(function (req, res, next) {
 
 // error handling
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message
-  res.locals.error = req.app.get('env') === 'development' ? err : {}
-
-  // render the error page
+  // return error
   res.status(err.status || 500)
-  res.json({
-    data: [{
-      type: 'response-general',
-      id: 1,
-      attributes: {
-        error: err
-      }
-    }]
-  })
+  res.json(callbackFactory.error(err, constants.responses.general))
 })
 
 module.exports = app
