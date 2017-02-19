@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
+import configuration from './../conf/configuration'
+
 // load module dependencies
 var app = require('../app')
-var debug = require('debug')('kapi:server')
+var debug = require('debug')(configuration.general.name + ':server')
 var http = require('http')
 
 // set correct port
