@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import configuration from './../conf/configuration'
+let configuration = require('./../conf/configuration')
 
 // load module dependencies
 var app = require('../app')

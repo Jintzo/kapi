@@ -1,9 +1,9 @@
 // load required modules
-import express from 'express'
-import path from 'path'
-import logger from 'morgan'
-import constants from './conf/constants'
-import callbackFactory from './factories/callback'
+let express = require('express')
+let path = require('path')
+let logger = require('morgan')
+let constants = require('./conf/constants')
+let callbackFactory = require('./factories/callback')
 
 // initialize app
 var app = express()

@@ -1,7 +1,7 @@
 // load module dependencies
-import constants from './../conf/constants'
+const constants = require('./../conf/constants')
 
-export default {
+module.exports = {
 
   /**
    * generate a new error callback object
