@@ -8,15 +8,36 @@
     "documentation": "documentation"
   },
 
+  "errors": {
+    "unknown": {
+      "text": "unknown error",
+      "parameters": []
+    },
+    "not_defined": {
+      "text": "~thing is not defined",
+      "parameters": ["thing"]
+    },
+    "not_existing": {
+      "text": "~thing does not exist",
+      "parameters": ["thing"]
+    },
+    "wrong_format": {
+      "text": "invalid ~thing",
+      "parameters": ["thing"]
+    },
+    "too_short": {
+      "text": "~thing is too short",
+      "parameters": ["thing"]
+    },
+    "too_long": {
+      "text": "~thing is too long",
+      "parameters": ["thing"]
+    }
+  },
+
   "callbacks": {
     "scheme_error": {
-      "data": [{
-        "type": "response-general",
-        "id": 1,
-        "attributes": {
-          "error": "unknown error"
-        }
-      }]
+      "errors": []
     }
   }
 }
