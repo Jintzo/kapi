@@ -1,5 +1,22 @@
 {
   "general": {
     "name": "kapi"
+  },
+
+  "responses": {
+    "general": "response-general",
+    "documentation": "documentation"
+  },
+
+  "callbacks": {
+    "scheme_error": {
+      "data": [{
+        "type": "response-general",
+        "id": 1,
+        "attributes": {
+          "error": "unknown error"
+        }
+      }]
+    }
   }
 }
