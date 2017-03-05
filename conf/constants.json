@@ -1,6 +1,7 @@
 {
   "general": {
-    "name": "kapi"
+    "name": "kapi",
+    "port": 3000
   },
 
   "database": {

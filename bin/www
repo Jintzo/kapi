@@ -8,7 +8,7 @@ var debug = require('debug')(constants.general.name + ':server')
 var http = require('http')
 
 // set correct port
-var port = normalizePort(process.env.PORT || '3000')
+var port = normalizePort(process.env.PORT || constants.general.port)
 app.set('port', port)
 
 // create HTTP server
