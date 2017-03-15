@@ -12,7 +12,7 @@ module.exports = {
   generate: function (error, parameters) {
 
     // set error text to default (unknown error)
-    var errorText = constants.name_unknown_error
+    var errorText = constants.errors.unknown.text
 
     // return if no error is provided
     if (typeof error === 'undefined' || error === null) {
@@ -31,7 +31,7 @@ module.exports = {
     for (var i = 0; i < error.parameters.length; i++) {
 
       // load replacement - if not defined, switch to default
-      var replacement = constants.name_undefined_parameter
+      var replacement = constants.errors.placeholder_undefined
       if (typeof parameters !== 'undefined' && parameters !== null && typeof parameters[error.parameters[i]] !== 'undefined') {
         replacement = parameters[error.parameters[i]]
       }
