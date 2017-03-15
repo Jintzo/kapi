@@ -1,6 +1,7 @@
 {
   "general": {
-    "name": "kapi"
+    "name": "kapi",
+    "port": 3000
   },
 
   "database": {
@@ -36,12 +37,10 @@
     "too_long": {
       "text": "~thing is too long",
       "parameters": ["thing"]
-    }
-  },
-
-  "callbacks": {
-    "scheme_error": {
-      "errors": []
+    },
+    "no_documentation": {
+      "text": "no documentation specified for this route",
+      "parameters": []
     }
   }
 }
