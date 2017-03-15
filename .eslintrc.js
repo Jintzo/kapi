@@ -6,6 +6,8 @@ module.exports = {
   },
   env: {
     browser: false,
+    node: true,
+    mocha: true
   },
   extends: 'standard',
 
@@ -13,6 +15,9 @@ module.exports = {
 
     // allow paren-less arrow functions
     'arrow-parens': 0,
+
+    // allow padded blocks
+    'padded-blocks': 0,
 
     // allow async-await
     'generator-star-spacing': 0,

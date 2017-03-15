@@ -4,11 +4,11 @@
   "description": "API der Kornformanalyseplattform IBF, KIT",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "nyc mocha"
   },
   "dependencies": {
     "body-parser": "^1.16.0",
-    "datejs": "^1.0.0-rc3",
     "debug": "~2.2.0",
     "express": "~4.14.0",
     "morgan": "~1.7.0",
@@ -25,6 +25,7 @@
     "babel-preset-es2015": "^6.22.0",
     "babel-preset-stage-2": "^6.22.0",
     "babel-register": "^6.22.0",
+    "chai": "^3.5.0",
     "eslint": "^3.14.1",
     "eslint-config-standard": "^6.2.1",
     "eslint-friendly-formatter": "^2.0.7",
@@ -33,6 +34,8 @@
     "eslint-plugin-promise": "^3.4.0",
     "eslint-plugin-standard": "^2.0.1",
     "json-loader": "^0.5.4",
+    "mocha": "^3.2.0",
+    "nyc": "^10.1.2",
     "webpack": "^2.2.1",
     "webpack-bundle-analyzer": "^2.2.1",
     "webpack-dev-middleware": "^1.10.0",
