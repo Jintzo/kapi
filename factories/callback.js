@@ -13,12 +13,10 @@ module.exports = {
 
     // generic callback object
     let callbackObject = {
-      errors: [
-        {
-          title: constants.responses.general,
-          detail: constants.errors.unknown.text
-        }
-      ]
+      errors: [{
+        title: constants.responses.general,
+        detail: constants.errors.unknown.text
+      }]
     }
 
     // set errorText and responseType apppropriately (if defined)
@@ -29,6 +27,30 @@ module.exports = {
     if (typeof responseType !== 'undefined' && responseType !== null && responseType !== '') {
       callbackObject.errors[0].title = responseType
     }
+
+    // return callback object
+    return callbackObject
+  },
+
+  /**
+   * generate a new documentation callback object
+   * @param  {Object} documentationObject parameter documentation
+   * @return {Object}                     documentation callback
+   */
+  documentationCallback: function (documentationObject) {
+
+    // generic callback object
+    let callbackObject = {
+      data: {
+        type: 'documentation',
+        id: 1,
+        attributes: {}
+      }
+    }
+
+    // set attributes appropriately
+    documentationObject = (typeof documentationObject === 'object') ? documentationObject : null
+    callbackObject.data.attributes = documentationObject
 
     // return callback object
     return callbackObject
