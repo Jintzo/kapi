@@ -145,7 +145,71 @@ describe('Callback Factory', function () {
       returnObject.errors[0].detail.should.equal('errorText')
       done()
     })
+  })
 
+  describe('#documentationCallback(documentationObject)', function () {
+
+    it('should return empty documentation if no documentationObject is defined', function (done) {
+
+      // get return object
+      const returnObject = callbackFactory.documentationCallback(null)
+
+      // basic checks
+      should.exist(returnObject)
+      returnObject.should.be.a('object')
+
+      // structure checks
+      returnObject.should.have.property('data')
+      returnObject.data.should.be.a('object')
+
+      // attribute checks
+      returnObject.data.should.have.property('attributes')
+      should.equal(returnObject.data.attributes, null)
+      done()
+    })
+
+    it('should return empty documentation if documentation is not an object', function (done) {
+
+      // get return object
+      const returnObject = callbackFactory.documentationCallback('test')
+
+      // basic checks
+      should.exist(returnObject)
+      returnObject.should.be.a('object')
+
+      // structure checks
+      returnObject.should.have.property('data')
+      returnObject.data.should.be.a('object')
+
+      // attribute checks
+      returnObject.data.should.have.property('attributes')
+      should.equal(returnObject.data.attributes, null)
+      done()
+    })
+
+    it('should return adapted documentation if documentationObject is correctly defined', function (done) {
+
+      // get return object
+      const returnObject = callbackFactory.documentationCallback({foo: 'bar'})
+
+      // basic checks
+      should.exist(returnObject)
+      returnObject.should.be.a('object')
+
+      // structure checks
+      returnObject.should.have.property('data')
+      returnObject.data.should.be.a('object')
+
+      // attribute checks
+      returnObject.data.should.have.property('attributes')
+      returnObject.data.attributes.should.be.a('object')
+
+      // detail checks
+      returnObject.data.attributes.should.have.property('foo')
+      returnObject.data.attributes.foo.should.be.a('string')
+      returnObject.data.attributes.foo.should.equal('bar')
+      done()
+    })
   })
 })
 
