@@ -8,4 +8,4 @@ require('./factories')
 // ///////////////////
 // END TO END TESTS //
 // ///////////////////
-// require('./e2e')
+require('./e2e')
