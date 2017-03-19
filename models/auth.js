@@ -56,7 +56,7 @@ module.exports = {
             var passwordHash = crypto.createHash('sha256').update(password).digest('hex')
 
             // get user ID
-            connection.query('SELECT id FROM user WHERE mail = ? AND passwordHash = ? AND isConfirmed = 1', [mail, passwordHash], function (err, rows) {
+            connection.query('SELECT id FROM user WHERE mail = ? AND passwordHash = ? AND confirmed = 1', [mail, passwordHash], function (err, rows) {
 
               // call back err if any
               if (err) {
