@@ -15,7 +15,7 @@ module.exports = {
 
     // check that name is defined
     if (typeof name === 'undefined' || name === null) {
-      const error = errorFactory.generate(constants.errors.not_defined, {thing: 'name'})
+      const error = errorFactory.generate(constants.errors.not_defined, {thing: 'database'})
       callback(callbackFactory.error(error, constants.responses.validate))
       return
     }
@@ -25,7 +25,7 @@ module.exports = {
 
     // check that name is in name list
     if (constants.database.available.indexOf(name) === -1) {
-      const error = errorFactory.generate(constants.errors.invalid, {thing: 'name'})
+      const error = errorFactory.generate(constants.errors.invalid, {thing: 'database'})
       callback(callbackFactory.error(error, constants.responses.validate))
       return
     }

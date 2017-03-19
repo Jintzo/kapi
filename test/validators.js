@@ -755,7 +755,7 @@ describe('database validator', function () {
         // detail checks
         result.errors[0].should.have.property('detail')
         result.errors[0].detail.should.be.a('string')
-        result.errors[0].detail.should.equal('name is not defined')
+        result.errors[0].detail.should.equal('database is not defined')
         done()
       })
     })
@@ -781,7 +781,7 @@ describe('database validator', function () {
         // detail checks
         result.errors[0].should.have.property('detail')
         result.errors[0].detail.should.be.a('string')
-        result.errors[0].detail.should.equal('invalid name')
+        result.errors[0].detail.should.equal('invalid database')
         done()
       })
     })
