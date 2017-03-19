@@ -9,7 +9,7 @@ module.exports = {
    * @param  {String} responseType the type of response (from constants)
    * @return {Object}              callback object
    */
-  errorCallback: function (errorText, responseType) {
+  error: function (errorText, responseType) {
 
     // generic callback object
     let callbackObject = {
@@ -37,7 +37,7 @@ module.exports = {
    * @param  {Object} documentationObject parameter documentation
    * @return {Object}                     documentation callback
    */
-  documentationCallback: function (documentationObject) {
+  documentation: function (documentationObject) {
 
     // generic callback object
     let callbackObject = {
@@ -68,7 +68,7 @@ module.exports = {
     }
 
     // set attributes appropriately
-    callbackObject.data.attributes = (typeof dataObject === 'object') ? dataObject : callbackObject.data.attributes
+    callbackObject.data.attributes = (typeof dataObject === 'object') ? dataObject : null
 
     // set response type appropriately
     callbackObject.data.type = (typeof responseType === 'string') ? responseType : callbackObject.data.type
