@@ -89,3 +89,5 @@ router.post('/logout', function (req, res) {
     res.json(result)
   })
 })
+
+module.exports = router

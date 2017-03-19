@@ -6,7 +6,7 @@ var callbackFactory = require('./../factories/callback')
 var router = express.Router()
 
 // load database model
-var database = require('./../models/database')
+var databases = require('./../models/databases')
 
 /**
  * GET /
@@ -21,7 +21,7 @@ router.get('/', function (req, res) {
  * returns stats on the provided database
  */
 router.get('/stats', function (req, res) {
-  database.stats(req.get('Database'), function (result) {
+  databases.stats(req.get('Database'), function (result) {
     res.json(result)
   })
 })
@@ -31,7 +31,9 @@ router.get('/stats', function (req, res) {
  * return available databases
  */
 router.get('/available', function (req, res) {
-  database.available(function (result) {
+  databases.available(function (result) {
     res.json(result)
   })
 })
+
+module.exports = router

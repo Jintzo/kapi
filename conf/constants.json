@@ -13,7 +13,25 @@
     "general": "response-general",
     "documentation": "documentation",
     "database": "response-database",
-    "auth": "response-auth"
+    "auth": "response-auth",
+    "validate": "response-validate"
+  },
+
+  "lengths": {
+    "default": 11
+  },
+
+  "users": {
+    "types": {
+      "user": {
+        "name": "User",
+        "id": 0
+      },
+      "admin": {
+        "name": "Administrator",
+        "id": 1
+      }
+    }
   },
 
   "errors": {
@@ -29,6 +47,10 @@
     },
     "not_existing": {
       "text": "~thing does not exist",
+      "parameters": ["thing"]
+    },
+    "invalid": {
+      "text": "invalid ~thing",
       "parameters": ["thing"]
     },
     "wrong_format": {
