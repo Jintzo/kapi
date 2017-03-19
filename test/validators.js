@@ -2,7 +2,7 @@
 const should = require('chai').should()
 
 // load modules to be tested
-const authValidator = require('./../validators/user')
+const userValidator = require('./../validators/user')
 const databaseValidator = require('./../validators/database')
 const authValidator = require('./../validators/auth')
 
@@ -12,7 +12,7 @@ describe('user validator', function () {
   describe('#id(id, callback)', function () {
 
     it('should return an error if no id is defined', function (done) {
-      authValidator.id(null, function (result) {
+      userValidator.id(null, function (result) {
 
         // basic checks
         should.exist(result)
@@ -38,7 +38,7 @@ describe('user validator', function () {
     })
 
     it('should return an error if empty id is defined', function (done) {
-      authValidator.id('', function (result) {
+      userValidator.id('', function (result) {
 
         // basic checks
         should.exist(result)
@@ -64,7 +64,7 @@ describe('user validator', function () {
     })
 
     it('should return an error if id is longer than 11 chars', function (done) {
-      authValidator.id('12345678901', function (result) {
+      userValidator.id('12345678901', function (result) {
 
         // basic checks
         should.exist(result)
@@ -90,7 +90,7 @@ describe('user validator', function () {
     })
 
     it('should return an error if id is not an integer', function (done) {
-      authValidator.id('abc', function (result) {
+      userValidator.id('abc', function (result) {
 
         // basic checks
         should.exist(result)
@@ -116,7 +116,7 @@ describe('user validator', function () {
     })
 
     it('should return no error otherwise', function (done) {
-      authValidator.id(123, function (result) {
+      userValidator.id(123, function (result) {
 
         // basic checks
         should.exist(result)
@@ -145,7 +145,7 @@ describe('user validator', function () {
   describe('#password(password, callback)', function () {
 
     it('should return an error if no password is defined', function (done) {
-      authValidator.password(null, function (result) {
+      userValidator.password(null, function (result) {
 
         // basic checks
         should.exist(result)
@@ -171,7 +171,7 @@ describe('user validator', function () {
     })
 
     it('should return an error if password is shorter than 8 characters', function (done) {
-      authValidator.password('1234567', function (result) {
+      userValidator.password('1234567', function (result) {
 
         // basic checks
         should.exist(result)
@@ -197,7 +197,7 @@ describe('user validator', function () {
     })
 
     it('should return no error otherwise', function (done) {
-      authValidator.password('üzügümülübrü', function (result) {
+      userValidator.password('üzügümülübrü', function (result) {
 
         // basic checks
         should.exist(result)
@@ -226,7 +226,7 @@ describe('user validator', function () {
   describe('#passwordHash', function () {
 
     it('should return an error if no passwordHash is defined', function (done) {
-      authValidator.passwordHash(null, function (result) {
+      userValidator.passwordHash(null, function (result) {
 
         // basic checks
         should.exist(result)
@@ -252,7 +252,7 @@ describe('user validator', function () {
     })
 
     it('should return an error if a passwordHash longer than 64 characters is defined', function (done) {
-      authValidator.passwordHash('12345678901234567890123456789012345678901234567890123456789012345', function (result) {
+      userValidator.passwordHash('12345678901234567890123456789012345678901234567890123456789012345', function (result) {
 
         // basic checks
         should.exist(result)
@@ -278,7 +278,7 @@ describe('user validator', function () {
     })
 
     it('should return an error if a passwordHash shorter than 64 characters is defined', function (done) {
-      authValidator.passwordHash('123456789012345678901234567890123456789012345678901234567890123', function (result) {
+      userValidator.passwordHash('123456789012345678901234567890123456789012345678901234567890123', function (result) {
 
         // basic checks
         should.exist(result)
@@ -304,7 +304,7 @@ describe('user validator', function () {
     })
 
     it('should return an error if a passwordHash containing non-hexadecimal characters is defined', function (done) {
-      authValidator.passwordHash('123456789012345678901234567890123456789012345678901234567890123g', function (result) {
+      userValidator.passwordHash('123456789012345678901234567890123456789012345678901234567890123g', function (result) {
 
         // basic checks
         should.exist(result)
@@ -330,7 +330,7 @@ describe('user validator', function () {
     })
 
     it('should return no error otherwise', function (done) {
-      authValidator.passwordHash('123456789012345678901234567890123456789012345678901234567890123f', function (result) {
+      userValidator.passwordHash('123456789012345678901234567890123456789012345678901234567890123f', function (result) {
 
         // basic checks
         should.exist(result)
@@ -359,7 +359,7 @@ describe('user validator', function () {
   describe('#mail(mail, callback)', function () {
 
     it('should return an error if no mail is defined', function (done) {
-      authValidator.mail(null, function (result) {
+      userValidator.mail(null, function (result) {
 
         // basic checks
         should.exist(result)
@@ -385,7 +385,7 @@ describe('user validator', function () {
     })
 
     it('should return an error if empty mail is defined', function (done) {
-      authValidator.mail('', function (result) {
+      userValidator.mail('', function (result) {
 
         // basic checks
         should.exist(result)
@@ -411,7 +411,7 @@ describe('user validator', function () {
     })
 
     it('should return an error if invalid mail is defined', function (done) {
-      authValidator.mail('yolo@@web.de', function (result) {
+      userValidator.mail('yolo@@web.de', function (result) {
 
         // basic checks
         should.exist(result)
@@ -437,7 +437,7 @@ describe('user validator', function () {
     })
 
     it('should return no error otherwise', function (done) {
-      authValidator.mail('yolo@web.de', function (result) {
+      userValidator.mail('yolo@web.de', function (result) {
 
         // basic checks
         should.exist(result)
@@ -466,7 +466,7 @@ describe('user validator', function () {
   describe('#type(type, callback)', function () {
 
     it('should return an error if no type is defined', function (done) {
-      authValidator.type(null, function (result) {
+      userValidator.type(null, function (result) {
 
         // basic checks
         should.exist(result)
@@ -492,7 +492,7 @@ describe('user validator', function () {
     })
 
     it('should return an error if empty type is defined', function (done) {
-      authValidator.type('', function (result) {
+      userValidator.type('', function (result) {
 
         // basic checks
         should.exist(result)
@@ -518,7 +518,7 @@ describe('user validator', function () {
     })
 
     it('should return an error if invalid type is specified', function (done) {
-      authValidator.type('slave', function (result) {
+      userValidator.type('slave', function (result) {
 
         // basic checks
         should.exist(result)
@@ -544,7 +544,7 @@ describe('user validator', function () {
     })
 
     it('should return no error otherwise', function (done) {
-      authValidator.type('1', function (result) {
+      userValidator.type('1', function (result) {
 
         // basic checks
         should.exist(result)
@@ -573,7 +573,7 @@ describe('user validator', function () {
   describe('#confirmed(confirmed, callback)', function () {
 
     it('should return an error if no confirmed is specified', function (done) {
-      authValidator.confirmed(null, function (result) {
+      userValidator.confirmed(null, function (result) {
 
         // basic checks
         should.exist(result)
@@ -599,7 +599,7 @@ describe('user validator', function () {
     })
 
     it('should return an error if empty confirmed is specified', function (done) {
-      authValidator.confirmed('', function (result) {
+      userValidator.confirmed('', function (result) {
 
         // basic checks
         should.exist(result)
@@ -625,7 +625,7 @@ describe('user validator', function () {
     })
 
     it('shold return no error if confirmed is 0 (Integer)', function (done) {
-      authValidator.confirmed(0, function (result) {
+      userValidator.confirmed(0, function (result) {
 
         // basic checks
         should.exist(result)
@@ -651,7 +651,7 @@ describe('user validator', function () {
     })
 
     it('should return no error if confirmed is 1 (Integer)', function (done) {
-      authValidator.confirmed(1, function (result) {
+      userValidator.confirmed(1, function (result) {
 
         // basic checks
         should.exist(result)
@@ -677,7 +677,7 @@ describe('user validator', function () {
     })
 
     it('should return no error if confirmed is 0 (String)', function (done) {
-      authValidator.confirmed('0', function (result) {
+      userValidator.confirmed('0', function (result) {
 
         // basic checks
         should.exist(result)
@@ -703,7 +703,7 @@ describe('user validator', function () {
     })
 
     it('should return no error if confirmed is 1 (String)', function (done) {
-      authValidator.confirmed('1', function (result) {
+      userValidator.confirmed('1', function (result) {
 
         // basic checks
         should.exist(result)
