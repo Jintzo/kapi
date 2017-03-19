@@ -17,6 +17,10 @@
     "validate": "response-validate"
   },
 
+  "lengths": {
+    "default": 11
+  },
+
   "users": {
     "types": {
       "user": {
