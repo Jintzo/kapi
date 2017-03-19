@@ -9,7 +9,9 @@ let callbackFactory = require('./factories/callback')
 var app = express()
 
 // logging
-app.use(logger('dev'))
+if (process.env.NODE_ENV !== 'test') {
+  app.use(logger('dev'))
+}
 app.use(express.static(path.join(__dirname, 'public')))
 
 // POST parsing
@@ -19,6 +21,8 @@ app.use(bodyParser.urlencoded({ extended: true })) // support urlencoded bodies
 
 // use external routes
 app.use('/', require('./routes/index'))
+app.use('/auth', require('./routes/auth'))
+app.use('/databases', require('./routes/databases'))
 
 // 404 forwarding
 app.use(function (req, res, next) {
