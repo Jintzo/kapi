@@ -44,13 +44,34 @@ module.exports = {
       data: {
         type: 'documentation',
         id: 1,
-        attributes: {}
+        attributes: null
       }
     }
 
     // set attributes appropriately
     documentationObject = (typeof documentationObject === 'object') ? documentationObject : null
     callbackObject.data.attributes = documentationObject
+
+    // return callback object
+    return callbackObject
+  },
+
+  single: function (dataObject, responseType) {
+
+    // generic callback object
+    let callbackObject = {
+      data: {
+        type: constants.responses.general,
+        id: 1,
+        attributes: null
+      }
+    }
+
+    // set attributes appropriately
+    callbackObject.data.attributes = (typeof dataObject === 'object') ? dataObject : callbackObject.data.attributes
+
+    // set response type appropriately
+    callbackObject.data.type = (typeof responseType === 'string') ? responseType : callbackObject.data.type
 
     // return callback object
     return callbackObject
