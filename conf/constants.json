@@ -13,7 +13,8 @@
     "general": "response-general",
     "documentation": "documentation",
     "database": "response-database",
-    "auth": "response-auth"
+    "auth": "response-auth",
+    "validate": "response-validate"
   },
 
   "users": {
@@ -42,6 +43,10 @@
     },
     "not_existing": {
       "text": "~thing does not exist",
+      "parameters": ["thing"]
+    },
+    "invalid": {
+      "text": "invalid ~thing",
       "parameters": ["thing"]
     },
     "wrong_format": {
