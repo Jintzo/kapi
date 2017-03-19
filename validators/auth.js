@@ -16,7 +16,7 @@ module.exports = {
     // check that the token is defined
     if (typeof token === 'undefined' || token === null) {
       const error = errorFactory.generate(constants.errors.not_defined, {thing: 'token'})
-      callback(callbackFactory.errorCallback(error, constants.responses.validate))
+      callback(callbackFactory.error(error, constants.responses.validate))
       return
     }
 
@@ -26,12 +26,12 @@ module.exports = {
     // check if token is a SHA-256 hash
     if (!token.match(/^[a-fA-F0-9]{64}$/)) {
       const error = errorFactory.generate(constants.errors.wrong_format, {thing: 'token'})
-      callback(callbackFactory.errorCallback(error, constants.responses.validate))
+      callback(callbackFactory.error(error, constants.responses.validate))
       return
     }
 
     // valid
-    callback(callbackFactory.errorCallback('none', constants.responses.validate))
+    callback(callbackFactory.error('none', constants.responses.validate))
     return
   }
 }
