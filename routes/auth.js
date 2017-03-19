@@ -61,7 +61,7 @@ router.get('/login', function (req, res) {
  */
 router.post('/login', function (req, res) {
 
-  auth.login(req.body.mail, req.body.password, req.get('Database'), function (result) {
+  auth.create(req.body.mail, req.body.password, req.get('Database'), function (result) {
     res.json(result)
   })
 })
