@@ -16,6 +16,19 @@
     "auth": "response-auth"
   },
 
+  "users": {
+    "types": {
+      "user": {
+        "name": "User",
+        "id": 0
+      },
+      "admin": {
+        "name": "Administrator",
+        "id": 1
+      }
+    }
+  },
+
   "errors": {
     "placeholder_undefined": "[undefined]",
     
