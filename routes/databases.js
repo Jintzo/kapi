@@ -1,5 +1,5 @@
 // load required modules
-var express = require('exoress')
+var express = require('express')
 var callbackFactory = require('./../factories/callback')
 
 // set up router
@@ -13,7 +13,7 @@ var database = require('./../models/database')
  * show available endpoints
  */
 router.get('/', function (req, res) {
-  res.json(callbackFactory.documentationCallback({ subroutes: ['stats', 'available'] }))
+  res.json(callbackFactory.documentation({ subroutes: ['stats', 'available'] }))
 })
 
 /**

@@ -10,7 +10,7 @@ var router = express.Router()
  * show available endpoints
 */
 router.get('/', function (req, res, next) {
-  res.json(callbackFactory.documentationCallback({ subroutes: ['none'] }))
+  res.json(callbackFactory.documentation({ subroutes: ['none'] }))
 })
 
 module.exports = router

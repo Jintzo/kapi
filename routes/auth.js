@@ -1,5 +1,5 @@
 // load required modules
-var express = require('exoress')
+var express = require('express')
 var callbackFactory = require('./../factories/callback')
 
 // set up router
@@ -13,7 +13,7 @@ var auth = require('./../models/auth')
  * show available endpoints
  */
 router.get('/', function (req, res) {
-  res.json(callbackFactory.documentationCallback({ subroutes: ['login', 'logout', 'verify'] }))
+  res.json(callbackFactory.documentation({ subroutes: ['login', 'logout', 'verify'] }))
 })
 
 /**
@@ -21,7 +21,7 @@ router.get('/', function (req, res) {
  * returns documentation on how to use the verify route
  */
 router.get('/verify', function (req, res) {
-  res.json(callbackFactory.documentationCallback({ usage: {
+  res.json(callbackFactory.documentation({ usage: {
     userID: '[userID]',
     token: '[token]'
   }}))
@@ -46,7 +46,7 @@ router.post('/verify', function (req, res) {
  * returns documentation on how to use the login route
  */
 router.get('/login', function (req, res) {
-  res.json(callbackFactory.documentationCallback({ usage: {
+  res.json(callbackFactory.documentation({ usage: {
     mail: '[mail]',
     password: '[password]'
   }}))
@@ -71,7 +71,7 @@ router.post('/login', function (req, res) {
  * returns documentation on how to use the logout route
  */
 router.get('/logout', function (req, res) {
-  res.json(callbackFactory.documentationCallback({ usage: {
+  res.json(callbackFactory.documentation({ usage: {
     userID: '[userID]',
     token: '[token]'
   }}))
