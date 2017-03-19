@@ -264,4 +264,27 @@ describe('Error Factory', function () {
       done()
     })
   })
+
+  describe('#containsError(errorObject)', function () {
+
+    it('should return false if non-object is provided', function (done) {
+      const result = errorFactory.containsError('abc')
+      result.should.equal(false)
+    })
+
+    it('should return false if random object is provided', function (done) {
+      const result = errorFactory.containsError({ data: { usage: { test: '[test]' } } })
+      result.should.equal(false)
+    })
+
+    it('should return false if none-error is provided', function (done) {
+      const result = errorFactory.containsError({ errors: [{ title: 'response-validate', detail: 'none' }] })
+      result.should.equal(false)
+    })
+
+    it('should return true if valid error object (!= none) is provided', function (done) {
+      const result = errorFactory.containsError({ errors: [{ title: 'response-validate', detail: 'test' }] })
+      result.should.equal(true)
+    })
+  })
 })
