@@ -35,3 +35,5 @@ router.get('/available', function (req, res) {
     res.json(result)
   })
 })
+
+module.exports = router
