@@ -5,6 +5,7 @@ module.exports = {
 
   /**
    * generate a new error message.
+   *
    * @param  {Object} error      error object
    * @param  {Object} parameters error parameters
    * @return {String}            text of the error
@@ -41,5 +42,20 @@ module.exports = {
     }
 
     return errorText
+  },
+
+  /**
+   * checks if a error callback object is an error or not
+   *
+   * @param  {Object}  errorCallback the error callback object to be verified
+   * @return {Boolean}               whether or not the provided callback object contains an error
+   */
+  containsError: function (errorCallback) {
+    return (typeof errorCallback === 'object' &&
+      Array.isArray(errorCallback.errors) &&
+      errorCallback.errors.length >= 1 &&
+      typeof errorCallback.errors[0] === 'object' &&
+      typeof errorCallback.errors[0].detail === 'string' &&
+      errorCallback.errors[0].detail !== 'none')
   }
 }
