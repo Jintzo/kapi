@@ -7,6 +7,51 @@ var validator = require('validator')
 module.exports = {
 
   /**
+   * validate an id.
+   *
+   * @param  {Object}   id       the id to be validated
+   * @param  {Function} callback callback function
+   * @return {void}
+   */
+  id: function (id, callback) {
+
+    // check that the id is defined
+    if (typeof id === 'undefined' || id === null) {
+      const error = errorFactory.generate(constants.errors.not_defined, {thing: 'id'})
+      callback(callbackFactory.error(error, constants.responses.validate))
+      return
+    }
+
+    // convert to string
+    id = id.toString()
+
+    // check that the id isn't shorter than 1 character
+    if (id.length < 1) {
+      const error = errorFactory.generate(constants.errors.too_short, {thing: 'id'})
+      callback(callbackFactory.error(error, constants.responses.validate))
+      return
+    }
+
+    // check that the id isn't longer than the default field length
+    if (id.length > constants.lengths.default) {
+      const error = errorFactory.generate(constants.errors.too_long, {thing: 'id'})
+      callback(callbackFactory.error(error, constants.responses.validate))
+      return
+    }
+
+    // check that the id is an integer
+    if (!validator.isInt(id)) {
+      const error = errorFactory.generate(constants.errors.wrong_format, {thing: 'id'})
+      callback(callbackFactory.error(error, constants.responses.validate))
+      return
+    }
+
+    // valid
+    callback(callbackFactory.error('none', constants.responses.validate))
+    return
+  },
+
+  /**
    * validate a mail
    * @param  {String}   mail     the mail to be validated
    * @param  {Function} callback callback function
@@ -77,7 +122,7 @@ module.exports = {
     // check that the passwordHash is defined
     if (typeof passwordHash === 'undefined' || passwordHash === null) {
       const error = errorFactory.generate(constants.errors.not_defined, {thing: 'passwordHash'})
-      callback(callbackFactory.errorCallback(error, constants.responses.validate))
+      callback(callbackFactory.error(error, constants.responses.validate))
       return
     }
 
@@ -87,12 +132,12 @@ module.exports = {
     // check if passwordHash is a SHA-256 hash
     if (!passwordHash.match(/^[a-fA-F0-9]{64}$/)) {
       const error = errorFactory.generate(constants.errors.wrong_format, {thing: 'passwordHash'})
-      callback(callbackFactory.errorCallback(error, constants.responses.validate))
+      callback(callbackFactory.error(error, constants.responses.validate))
       return
     }
 
     // valid
-    callback(callbackFactory.errorCallback('none', constants.responses.validate))
+    callback(callbackFactory.error('none', constants.responses.validate))
     return
   },
 
@@ -117,7 +162,8 @@ module.exports = {
     // check that type is in type list
     let valid = false
     for (var userType in constants.users.types) {
-      if (userType.id === type) {
+      let user = constants.users.types[userType]
+      if (user.id.toString() === type) {
         valid = true
       }
     }
@@ -143,7 +189,7 @@ module.exports = {
     // check that confirmed is defined
     if (typeof confirmed === 'undefined' || confirmed === null) {
       const error = errorFactory.generate(constants.errors.not_defined, {thing: 'confirmed'})
-      callback(callbackFactory.errorCallback(error, constants.responses.validate))
+      callback(callbackFactory.error(error, constants.responses.validate))
       return
     }
 
@@ -153,12 +199,12 @@ module.exports = {
     // check that isSupervisor is either 0 or 1
     if (confirmed !== '0' && confirmed !== '1') {
       const error = errorFactory.generate(constants.errors.wrong_format, {thing: 'confirmed'})
-      callback(callbackFactory.errorCallback(error, constants.responses.validate))
+      callback(callbackFactory.error(error, constants.responses.validate))
       return
     }
 
     // valid
-    callback(callbackFactory.errorCallback('none', constants.responses.validate))
+    callback(callbackFactory.error('none', constants.responses.validate))
     return
   }
 }
