@@ -64,7 +64,7 @@ describe('user validator', function () {
     })
 
     it('should return an error if id is longer than 11 chars', function (done) {
-      userValidator.id('12345678901', function (result) {
+      userValidator.id('123456789012', function (result) {
 
         // basic checks
         should.exist(result)
@@ -405,7 +405,7 @@ describe('user validator', function () {
         // detail checks
         result.errors[0].should.have.property('detail')
         result.errors[0].detail.should.be.a('string')
-        result.errors[0].detail.should.equal('mail is too short')
+        result.errors[0].detail.should.equal('invalid mail')
         done()
       })
     })
