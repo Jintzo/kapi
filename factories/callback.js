@@ -9,16 +9,14 @@ module.exports = {
    * @param  {String} responseType the type of response (from constants)
    * @return {Object}              callback object
    */
-  errorCallback: function (errorText, responseType) {
+  error: function (errorText, responseType) {
 
     // generic callback object
     let callbackObject = {
-      errors: [
-        {
-          title: constants.responses.general,
-          detail: constants.errors.unknown.text
-        }
-      ]
+      errors: [{
+        title: constants.responses.general,
+        detail: constants.errors.unknown.text
+      }]
     }
 
     // set errorText and responseType apppropriately (if defined)
@@ -29,6 +27,51 @@ module.exports = {
     if (typeof responseType !== 'undefined' && responseType !== null && responseType !== '') {
       callbackObject.errors[0].title = responseType
     }
+
+    // return callback object
+    return callbackObject
+  },
+
+  /**
+   * generate a new documentation callback object
+   * @param  {Object} documentationObject parameter documentation
+   * @return {Object}                     documentation callback
+   */
+  documentation: function (documentationObject) {
+
+    // generic callback object
+    let callbackObject = {
+      data: {
+        type: 'documentation',
+        id: 1,
+        attributes: null
+      }
+    }
+
+    // set attributes appropriately
+    documentationObject = (typeof documentationObject === 'object') ? documentationObject : null
+    callbackObject.data.attributes = documentationObject
+
+    // return callback object
+    return callbackObject
+  },
+
+  single: function (dataObject, responseType) {
+
+    // generic callback object
+    let callbackObject = {
+      data: {
+        type: constants.responses.general,
+        id: 1,
+        attributes: null
+      }
+    }
+
+    // set attributes appropriately
+    callbackObject.data.attributes = (typeof dataObject === 'object') ? dataObject : null
+
+    // set response type appropriately
+    callbackObject.data.type = (typeof responseType === 'string') ? responseType : callbackObject.data.type
 
     // return callback object
     return callbackObject
