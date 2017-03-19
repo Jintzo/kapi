@@ -9,7 +9,7 @@ const errorFactory = require('./../factories/error')
 describe('Callback Factory', function () {
 
   // error callback function
-  describe('#errorCallback(errorText, responseType)', function () {
+  describe('#error(errorText, responseType)', function () {
 
     it('should return default error if both errorText and responseType are undefined', function (done) {
 
