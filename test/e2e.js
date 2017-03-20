@@ -684,7 +684,7 @@ describe('databases route', function () {
     })
 
     it('should return stats about the specified database', function (done) {
-      chai.request(app).get('databases/stats').set('Database', 'KFA_phpentwicklung').end(function (err, res) {
+      chai.request(app).get('/databases/stats').set('Database', 'KFA_phpentwicklung').end(function (err, res) {
 
         // basic checks
         should.exist(res)
@@ -718,7 +718,7 @@ describe('databases route', function () {
   describe('GET /available', function () {
 
     it('should return an array of available databases', function (done) {
-      chai.request(app).get('databases/available').end(function (err, res) {
+      chai.request(app).get('/databases/available').end(function (err, res) {
 
         console.log(err)
 
@@ -741,5 +741,58 @@ describe('databases route', function () {
         done()
       })
     })
+  })
+})
+
+// /////////////
+// USER ROUTE //
+// /////////////
+describe('user route', function () {
+
+  describe('GET /', function () {
+
+    it('should return a list of subroutes', function (done) {
+      chai.request(app).get('/user').end(function (err, res) {
+        should.exist(res)
+        should.not.exist(err)
+        res.should.have.status(200)
+        res.body.should.be.a('object')
+        res.body.should.have.property('data')
+        res.body.data.should.be.a('object')
+        res.body.data.should.have.property('attributes')
+        res.body.data.attributes.should.be.a('object')
+        res.body.data.attributes.should.have.property('subroutes')
+        res.body.data.attributes.subroutes.should.be.a('array')
+        done()
+      })
+    })
+  })
+
+  describe('GET /register', function () {
+
+  })
+
+  describe('POST /register', function () {
+
+  })
+
+  describe('GET /confirm', function () {
+
+  })
+
+  describe('POST /confirm', function () {
+
+  })
+
+  describe('GET /upgrade', function () {
+
+  })
+
+  describe('POST /upgrade', function () {
+
+  })
+
+  describe('GET /:id', function () {
+
   })
 })
