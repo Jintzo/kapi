@@ -729,7 +729,7 @@ describe('databases route', function () {
     })
 
     it('should return stats about the specified database', function (done) {
-      chai.request(app).get('databases/stats').set('Database', 'development').end(function (err, res) {
+      chai.request(app).get('databases/stats').set('Database', 'KFA_phpentwicklung').end(function (err, res) {
 
         // basic checks
         should.exist(res)
@@ -763,7 +763,7 @@ describe('databases route', function () {
   describe('GET /available', function () {
 
     it('should return an array of available databases', function (done) {
-      chai.request(app).get('databases/stats').end(function (err, res) {
+      chai.request(app).get('databases/available').end(function (err, res) {
 
         // basic checks
         should.exist(res)
