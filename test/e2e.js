@@ -78,7 +78,7 @@ describe('auth route', function () {
   describe('POST /verify', function () {
 
     it('should return an error if no database is specified', function (done) {
-      chai.request(app).post('/auth/verify').set('Database', '').end(function (err, res) {
+      chai.request(app).post('/auth/verify').set('Database', null).end(function (err, res) {
 
         // basic checks
         should.exist(res)
@@ -98,7 +98,7 @@ describe('auth route', function () {
         res.body.errors[0].title.should.equal('response-validate')
         res.body.errors[0].should.have.property('detail')
         res.body.errors[0].detail.should.be.a('string')
-        res.body.errors[0].detail.should.equal('invalid database')
+        res.body.errors[0].detail.should.equal('database is not defined')
         done()
       })
     })
@@ -262,7 +262,7 @@ describe('auth route', function () {
   describe('POST /login', function () {
 
     it('should return an error if no database is specified', function (done) {
-      chai.request(app).post('/auth/login').set('Database', '').end(function (err, res) {
+      chai.request(app).post('/auth/login').set('Database', null).end(function (err, res) {
 
         // basic checks
         should.exist(res)
@@ -435,7 +435,7 @@ describe('auth route', function () {
         res.body.errors[0].should.be.a('object')
         res.body.errors[0].should.have.property('title')
         res.body.errors[0].title.should.be.a('string')
-        res.body.errors[0].title.should.equal('response-validate')
+        res.body.errors[0].title.should.equal('response-database')
         res.body.errors[0].should.have.property('detail')
         res.body.errors[0].detail.should.be.a('string')
         res.body.errors[0].detail.should.equal('invalid credentials')
@@ -489,7 +489,7 @@ describe('auth route', function () {
   describe('POST /logout', function () {
 
     it('should return an error if no database is specified', function (done) {
-      chai.request(app).post('/auth/logout').set('Database', '').end(function (err, res) {
+      chai.request(app).post('/auth/logout').set('Database', null).end(function (err, res) {
 
         // basic checks
         should.exist(res)
@@ -509,7 +509,7 @@ describe('auth route', function () {
         res.body.errors[0].title.should.equal('response-validate')
         res.body.errors[0].should.have.property('detail')
         res.body.errors[0].detail.should.be.a('string')
-        res.body.errors[0].detail.should.equal('invalid database')
+        res.body.errors[0].detail.should.equal('database is not defined')
         done()
       })
     })
@@ -677,7 +677,7 @@ describe('databases route', function () {
   describe('GET /stats', function () {
 
     it('should return an error if no database is specified', function (done) {
-      chai.request(app).get('/databases/stats').set('Database', '').end(function (err, res) {
+      chai.request(app).get('/databases/stats').set('Database', null).end(function (err, res) {
 
         // basic checks
         should.exist(res)
@@ -697,7 +697,7 @@ describe('databases route', function () {
         res.body.errors[0].title.should.equal('response-validate')
         res.body.errors[0].should.have.property('detail')
         res.body.errors[0].detail.should.be.a('string')
-        res.body.errors[0].detail.should.equal('invalid database')
+        res.body.errors[0].detail.should.equal('database is not defined')
         done()
       })
     })
