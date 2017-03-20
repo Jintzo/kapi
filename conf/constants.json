@@ -6,7 +6,7 @@
 
   "database": {
     "max_connections": 1000,
-    "available": ["development", "KFA_phpentwicklung", "KFA_zum_ersten_auswerten", "KFA1_finger_weg"]
+    "available": ["development", "KFA_phpentwicklung", "KFA_zum_ersten_Auswerten", "KFA1_finger_weg"]
   },
 
   "responses": {
