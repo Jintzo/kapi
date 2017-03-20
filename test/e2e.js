@@ -435,7 +435,7 @@ describe('auth route', function () {
         res.body.errors[0].should.be.a('object')
         res.body.errors[0].should.have.property('title')
         res.body.errors[0].title.should.be.a('string')
-        res.body.errors[0].title.should.equal('response-database')
+        res.body.errors[0].title.should.equal('response-auth')
         res.body.errors[0].should.have.property('detail')
         res.body.errors[0].detail.should.be.a('string')
         res.body.errors[0].detail.should.equal('invalid credentials')
