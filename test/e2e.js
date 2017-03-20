@@ -768,29 +768,140 @@ describe('user route', function () {
 
   describe('GET /register', function () {
 
+    it('should return documentation', function (done) {
+      chai.request(app).get('/user/register').end(function (err, res) {
+        should.exist(res)
+        should.not.exist(err)
+        res.should.have.status(200)
+        res.body.should.be.a('object')
+        res.body.should.have.property('data')
+        res.body.data.should.be.a('object')
+        res.body.data.should.have.property('attributes')
+        res.body.data.attributes.should.be.a('object')
+        res.body.data.attributes.should.have.property('usage')
+        res.body.data.attributes.usage.should.be.a('object')
+        done()
+      })
+    })
   })
 
   describe('POST /register', function () {
 
+    it('should return an error if no database is specified')
+
+    it('should return an error if invalid database is specified')
+
+    it('should return an error if no mail is specified')
+
+    it('should return an error if invalid mail is specified')
+
+    it('should return an error if no password is specified')
+
+    it('should return an error if invalid password is specified')
+
+    it('should return an error if passwordConfirm does not match password')
+
+    it('should return an error if no type is specified')
+
+    it('should return an error if invalid type is specified')
+
+    it('should return no error otherwise')
   })
 
   describe('GET /confirm', function () {
 
+    it('should return documentation', function (done) {
+      chai.request(app).get('/user/confirm').end(function (err, res) {
+        should.exist(res)
+        should.not.exist(err)
+        res.should.have.status(200)
+        res.body.should.be.a('object')
+        res.body.should.have.property('data')
+        res.body.data.should.be.a('object')
+        res.body.data.should.have.property('attributes')
+        res.body.data.attributes.should.be.a('object')
+        res.body.data.attributes.should.have.property('usage')
+        res.body.data.attributes.usage.should.be.a('object')
+        done()
+      })
+    })
   })
 
   describe('POST /confirm', function () {
 
+    it('should return an error if no database is specified')
+
+    it('should return an error if invalid database is specified')
+
+    it('should return an error if no token is specified')
+
+    it('should return an error if invalid token is specified')
+
+    it('should return an error if no userID is specified')
+
+    it('should return an error if invalid userID is specified')
+
+    it('should return an error if token-holder has not enough rights')
+
+    it('should return no error otherwise')
   })
 
   describe('GET /upgrade', function () {
 
+    it('should return documentation', function (done) {
+      chai.request(app).get('/user/upgrade').end(function (err, res) {
+        should.exist(res)
+        should.not.exist(err)
+        res.should.have.status(200)
+        res.body.should.be.a('object')
+        res.body.should.have.property('data')
+        res.body.data.should.be.a('object')
+        res.body.data.should.have.property('attributes')
+        res.body.data.attributes.should.be.a('object')
+        res.body.data.attributes.should.have.property('usage')
+        res.body.data.attributes.usage.should.be.a('object')
+        done()
+      })
+    })
   })
 
   describe('POST /upgrade', function () {
 
+    it('should return an error if no database is specified')
+
+    it('should return an error if invalid database is specified')
+
+    it('should return an error if no token is specified')
+
+    it('should return an error if invalid token is specified')
+
+    it('should return an error if no userID is specified')
+
+    it('should return an error if invalid userID is specified')
+
+    it('should return an error if no type is specified')
+
+    it('should return an error if invalid type is specified')
+
+    it('should return an error if token-holder has not enough rights')
+
+    it('should return no error otherwise')
   })
 
   describe('GET /:id', function () {
 
+    it('should return an error if no database is specified')
+
+    it('should return an error if invalid database is specified')
+
+    it('should return an error if no token is specified')
+
+    it('should return an error if invalid token is specified')
+
+    it('should return an error if invalid id is specified')
+
+    it('should return an error if token-holder has not enough rights')
+
+    it('should return no error otherwise')
   })
 })
