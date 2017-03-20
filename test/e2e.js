@@ -734,7 +734,7 @@ describe('databases route', function () {
 
         // databases checks
         res.body.data.attributes.should.have.property('available')
-        res.body.data.attributes.databases.should.be.a('array')
+        res.body.data.attributes.available.should.be.a('array')
 
         done()
       })
