@@ -613,7 +613,7 @@ describe('auth route', function () {
         res.body.errors[0].title.should.equal('response-validate')
         res.body.errors[0].should.have.property('detail')
         res.body.errors[0].detail.should.be.a('string')
-        res.body.errors[0].detail.should.equal('invalid id')
+        res.body.errors[0].detail.should.equal('token is not defined')
         done()
       })
     })
