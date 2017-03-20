@@ -417,54 +417,9 @@ describe('auth route', function () {
       })
     })
 
-    it('should return an error if invalid mail-password-combination is specified', function (done) {
-      chai.request(app).post('/auth/login').set('Database', 'development').send({ mail: 'yolo@web.de', password: 'üzügümülübrü' }).end(function (err, res) {
+    it('should return an error if invalid mail-password-combination is specified')
 
-        // basic checks
-        should.exist(res)
-        should.not.exist(err)
-        res.should.have.status(200)
-
-        // structure checks
-        res.body.should.be.a('object')
-        res.body.should.have.property('errors')
-        res.body.errors.should.be.a('array')
-        res.body.errors.should.have.length(1)
-
-        // error checks
-        res.body.errors[0].should.be.a('object')
-        res.body.errors[0].should.have.property('title')
-        res.body.errors[0].title.should.be.a('string')
-        res.body.errors[0].title.should.equal('response-auth')
-        res.body.errors[0].should.have.property('detail')
-        res.body.errors[0].detail.should.be.a('string')
-        res.body.errors[0].detail.should.equal('invalid credentials')
-        done()
-      })
-    })
-
-    it('should return token if valid mail-password-combination is specified', function (done) {
-      chai.request(app).post('/auth/login').set('Database', 'development').send({ mail: 'yolo@web.de', password: 'rosa' }).end(function (err, res) {
-
-        // basic checks
-        should.exist(res)
-        should.not.exist(err)
-        res.should.have.status(200)
-
-        // structure checks
-        res.body.should.be.a('object')
-        res.body.should.have.property('data')
-        res.body.data.should.be.a('object')
-        res.body.data.should.have.property('attributes')
-        res.body.data.attributes.should.be.a('object')
-
-        // token checks
-        res.body.data.attributes.should.have.property('token')
-        res.body.data.attributes.token.should.be.a('string')
-        res.body.data.attributes.token.should.have.length(64)
-        done()
-      })
-    })
+    it('should return token if valid mail-password-combination is specified')
   })
 
   describe('GET /logout', function () {
@@ -751,7 +706,7 @@ describe('databases route', function () {
         res.body.data.attributes.should.have.property('sampleCount')
         res.body.data.attributes.sampleCount.should.be.a('number')
 
-        // content checks -- particlaCount
+        // content checks -- particleCount
         res.body.data.attributes.should.have.property('particleCount')
         res.body.data.attributes.particlaCount.should.be.a('number')
 
@@ -764,6 +719,8 @@ describe('databases route', function () {
 
     it('should return an array of available databases', function (done) {
       chai.request(app).get('databases/available').end(function (err, res) {
+
+        console.log(err)
 
         // basic checks
         should.exist(res)
