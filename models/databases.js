@@ -91,6 +91,5 @@ module.exports = {
     callback(callbackFactory.single({
       available: constants.database.available
     }, constants.responses.database))
-    return
   }
 }
