@@ -708,7 +708,7 @@ describe('databases route', function () {
 
         // content checks -- particleCount
         res.body.data.attributes.should.have.property('particleCount')
-        res.body.data.attributes.particlaCount.should.be.a('number')
+        res.body.data.attributes.particleCount.should.be.a('number')
 
         done()
       })
