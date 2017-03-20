@@ -13,6 +13,80 @@ var databaseValidator = require('./../validators/database')
 module.exports = {
 
   /**
+   * verify that a userID-token-combination is still valid
+   * @param  {Integer}  userID       user ID
+   * @param  {String}   token        token
+   * @param  {String}   databaseName name of the database
+   * @param  {Function} callback     callback function
+   * @return {void}
+   */
+  verify: function (userID, token, databaseName, callback) {
+
+    // validate database name
+    databaseValidator.name(databaseName, function (result) {
+      if (errorFactory.containsError(result)) {
+        callback(result)
+        return
+      }
+
+      // validate user ID
+      userValidator.id(userID, function (result) {
+        if (errorFactory.containsError(result)) {
+          callback(result)
+          return
+        }
+
+        // validate token
+        authValidator.token(token, function (result) {
+          if (errorFactory.containsError(result)) {
+            callback(result)
+            return
+          }
+
+          // pool database connection
+          database.pool(databaseName).getConnection(function (err, connection) {
+
+            // call back err if any
+            if (err) {
+              callback(callbackFactory.error(err, constants.responses.database))
+              return
+            }
+
+            // check if entry exists in database
+            connection.query('SELECT * FROM session WHERE userID = ? AND token = ?', [userID, token], function (err, rows) {
+
+              // call back err if any
+              if (err) {
+                callback(callbackFactory.error(err, constants.responses.database))
+                return
+              }
+
+              if (rows.length === 0) {
+                callback(callbackFactory.error(constants.errors.no_such, {thing: 'session'}))
+                return
+              } else {
+
+                // check if session is still valid
+                var nowDate = new Date()
+                var validUntilDate = new Date(Date.parse(rows[0].validUntil))
+                var timeDifference = validUntilDate.getTime() - nowDate.getTime()
+
+                if (timeDifference <= 0) {
+                  callback(callbackFactory.single({ error: 'none', status: 'invalid' }, constants.responses.auth))
+                  return
+                } else {
+                  callback(callbackFactory.single({ error: 'none', status: 'valid' }))
+                  return
+                }
+              }
+            })
+          })
+        })
+      })
+    })
+  },
+
+  /**
    * create a new session or update an existing one
    * @param  {String}   mail         mail of the user
    * @param  {String}   password     password of the user
@@ -60,7 +134,7 @@ module.exports = {
 
               // call back err if any
               if (err) {
-                callback(callbackFactory.error(err, constants.responses.database))
+                callback(callbackFactory.error(err, constants.responses.auth))
                 return
               }
 
