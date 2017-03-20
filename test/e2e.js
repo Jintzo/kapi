@@ -720,8 +720,6 @@ describe('databases route', function () {
     it('should return an array of available databases', function (done) {
       chai.request(app).get('/databases/available').end(function (err, res) {
 
-        console.log(err)
-
         // basic checks
         should.exist(res)
         should.not.exist(err)
@@ -735,7 +733,7 @@ describe('databases route', function () {
         res.body.data.attributes.should.be.a('object')
 
         // databases checks
-        res.body.data.attributes.should.have.property('databases')
+        res.body.data.attributes.should.have.property('available')
         res.body.data.attributes.databases.should.be.a('array')
 
         done()
