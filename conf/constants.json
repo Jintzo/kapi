@@ -41,6 +41,10 @@
       "text": "unknown error",
       "parameters": []
     },
+    "no_such": {
+      "text": "no such ~thing",
+      "parameters": ["thing"]
+    },
     "not_defined": {
       "text": "~thing is not defined",
       "parameters": ["thing"]

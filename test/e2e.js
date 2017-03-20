@@ -150,12 +150,12 @@ describe('auth route', function () {
         res.body.errors[0].title.should.equal('response-validate')
         res.body.errors[0].should.have.property('detail')
         res.body.errors[0].detail.should.be.a('string')
-        res.body.errors[0].detail.should.equal('userID is not defined')
+        res.body.errors[0].detail.should.equal('id is not defined')
         done()
       })
     })
 
-    it('should return an error if invalid userID is specified', function (done) {
+    it('should return an error if invalid id is specified', function (done) {
       chai.request(app).post('/auth/verify').set('Database', 'development').send({ userID: 'a' }).end(function (err, res) {
 
         // basic checks
@@ -176,7 +176,7 @@ describe('auth route', function () {
         res.body.errors[0].title.should.equal('response-validate')
         res.body.errors[0].should.have.property('detail')
         res.body.errors[0].detail.should.be.a('string')
-        res.body.errors[0].detail.should.equal('invalid userID')
+        res.body.errors[0].detail.should.equal('invalid id')
         done()
       })
     })
@@ -202,7 +202,7 @@ describe('auth route', function () {
         res.body.errors[0].title.should.equal('response-validate')
         res.body.errors[0].should.have.property('detail')
         res.body.errors[0].detail.should.be.a('string')
-        res.body.errors[0].detail.should.equal('invalid userID')
+        res.body.errors[0].detail.should.equal('token is not defined')
         done()
       })
     })
@@ -234,7 +234,7 @@ describe('auth route', function () {
     })
 
     // TODO implement via before()
-    it('should return invalid if invalid userID-token-pair is specified')
+    it('should return invalid if invalid id-token-pair is specified')
 
     // TODO implement via before()
     it('should return valid if valid userID-token-pair is specified')
@@ -561,12 +561,12 @@ describe('auth route', function () {
         res.body.errors[0].title.should.equal('response-validate')
         res.body.errors[0].should.have.property('detail')
         res.body.errors[0].detail.should.be.a('string')
-        res.body.errors[0].detail.should.equal('userID is not defined')
+        res.body.errors[0].detail.should.equal('id is not defined')
         done()
       })
     })
 
-    it('should return an error if invalid userID is specified', function (done) {
+    it('should return an error if invalid id is specified', function (done) {
       chai.request(app).post('/auth/logout').set('Database', 'development').send({ userID: 'a' }).end(function (err, res) {
 
         // basic checks
@@ -587,7 +587,7 @@ describe('auth route', function () {
         res.body.errors[0].title.should.equal('response-validate')
         res.body.errors[0].should.have.property('detail')
         res.body.errors[0].detail.should.be.a('string')
-        res.body.errors[0].detail.should.equal('invalid userID')
+        res.body.errors[0].detail.should.equal('invalid id')
         done()
       })
     })
@@ -613,7 +613,7 @@ describe('auth route', function () {
         res.body.errors[0].title.should.equal('response-validate')
         res.body.errors[0].should.have.property('detail')
         res.body.errors[0].detail.should.be.a('string')
-        res.body.errors[0].detail.should.equal('invalid userID')
+        res.body.errors[0].detail.should.equal('invalid id')
         done()
       })
     })
@@ -644,7 +644,7 @@ describe('auth route', function () {
       })
     })
 
-    it('should return no error if invalid userID-token-pair is specified')
+    it('should return no error if invalid id-token-pair is specified')
 
     it('should return no erorr if valid userID-token-pair is specified')
   })
