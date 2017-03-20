@@ -85,7 +85,7 @@ router.get('/logout', function (req, res) {
  * Body: userID, token
  */
 router.post('/logout', function (req, res) {
-  auth.logout(req.body.userID, req.body.token, req.get('Database'), function (result) {
+  auth.delete(req.body.userID, req.body.token, req.get('Database'), function (result) {
     res.json(result)
   })
 })
