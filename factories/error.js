@@ -52,10 +52,7 @@ module.exports = {
    */
   containsError: function (error) {
     return (typeof error === 'object' &&
-      Array.isArray(error.errors) &&
-      error.errors.length >= 1 &&
-      typeof error.errors[0] === 'object' &&
-      typeof error.errors[0].detail === 'string' &&
-      error.errors[0].detail !== 'none')
+      typeof error.detail === 'string' &&
+      error.etail !== 'none')
   }
 }

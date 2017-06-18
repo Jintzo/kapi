@@ -13,19 +13,19 @@ module.exports = {
 
     // generic callback object
     let callbackObject = {
-      errors: [{
+      error: {
         title: constants.responses.general,
         detail: constants.errors.unknown.text
-      }]
+      }
     }
 
     // set errorText and responseType apppropriately (if defined)
     if (typeof errorText !== 'undefined' && errorText !== null && errorText !== '') {
-      callbackObject.errors[0].detail = errorText
+      callbackObject.error.detail = errorText
     }
 
     if (typeof responseType !== 'undefined' && responseType !== null && responseType !== '') {
-      callbackObject.errors[0].title = responseType
+      callbackObject.error.title = responseType
     }
 
     // return callback object
