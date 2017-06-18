@@ -6,9 +6,6 @@ let constants = require('./conf/constants')
 let callbackFactory = require('./factories/callback')
 var cors = require('cors')
 
-// allow all origins
-app.use(cors({origin: 'null'}))
-
 // initialize app
 var app = express()
 
@@ -17,6 +14,9 @@ if (process.env.NODE_ENV !== 'test') {
   app.use(logger('dev'))
 }
 app.use(express.static(path.join(__dirname, 'public')))
+
+// allow all origins
+app.use(cors({origin: 'null'}))
 
 // POST parsing
 var bodyParser = require('body-parser')
