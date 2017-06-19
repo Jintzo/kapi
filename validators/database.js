@@ -1,6 +1,5 @@
 // load needed modules
 var constants = require('./../conf/constants')
-var callbackFactory = require('./../factories/callback')
 var errorFactory = require('./../factories/error')
 
 module.exports = {
@@ -16,7 +15,7 @@ module.exports = {
     // check that name is defined
     if (typeof name === 'undefined' || name === null) {
       const error = errorFactory.generate(constants.errors.not_defined, {thing: 'database'})
-      callback(callbackFactory.error(error, constants.responses.validate))
+      callback({ error })
       return
     }
 
@@ -26,12 +25,12 @@ module.exports = {
     // check that name is in name list
     if (constants.database.available.indexOf(name) === -1) {
       const error = errorFactory.generate(constants.errors.invalid, {thing: 'database'})
-      callback(callbackFactory.error(error, constants.responses.validate))
+      callback({ error })
       return
     }
 
     // valid
-    callback(callbackFactory.error('none', constants.responses.validate))
+    callback({ error: 'none' })
     return
   }
 }
