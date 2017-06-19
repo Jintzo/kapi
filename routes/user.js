@@ -22,10 +22,11 @@ router.get('/', function (req, res) {
  */
 router.get('/register', function (req, res) {
   res.json(callbackFactory.documentation({ usage: {
+    name: '[username]',
     mail: '[mail]',
     password: '[password]',
     passwordConfirm: '[passwordConfirm]',
-    type: '[type]'
+    database: '[database]'
   }}))
 })
 
@@ -37,7 +38,7 @@ router.get('/register', function (req, res) {
  * Body: mail, password, passwordConfirm, type
  */
 router.post('/register', function (req, res) {
-  user.register(req.body.mail, req.body.password, req.body.passwordConfirm, req.body.type, req.get('Database'), function (result) {
+  user.register(req.body.name, req.body.mail, req.body.password, req.body.passwordConfirm, req.get('database'), function (result) {
     res.json(result)
   })
 })
