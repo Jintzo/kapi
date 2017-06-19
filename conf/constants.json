@@ -74,10 +74,6 @@
       "text": "no documentation specified for this route",
       "parameters": []
     },
-    "invalid_credentials": {
-      "text": "invalid credentials",
-      "parameters": []
-    },
     "no_match": {
       "text": "~things do not match",
       "parameters": ["things"]
