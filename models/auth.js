@@ -88,23 +88,23 @@ module.exports = {
 
   /**
    * create a new session or update an existing one
-   * @param  {String}   mail         mail of the user
+   * @param  {String}   name         name of the user
    * @param  {String}   password     password of the user
    * @param  {String}   databaseName name of the database
    * @param  {Function} callback     callback function
    * @return {void}
    */
-  create: function (mail, password, databaseName, callback) {
+  create: function (name, password, databaseName, callback) {
 
     // validate database name
     databaseValidator.name(databaseName, function (result) {
-      if (errorFactory.containsError(result)) {
+      if (result.error !== 'none') {
         callback(result)
         return
       }
 
-      // validate mail
-      userValidator.mail(mail, function (result) {
+      // validate name
+      userValidator.name(name, function (result) {
         if (errorFactory.containsError(result)) {
           callback(result)
           return
@@ -122,15 +122,25 @@ module.exports = {
 
             // call back err if any
             if (err) {
-              callback(callbackFactory.error(err, constants.responses.database))
-              return
+              let error = ''
+              const errorCode = err.code
+              switch (errorCode) {
+                case 'ENOTFOUND':
+                  error = errorFactory.generate(constants.errors.not_reached, { thing: 'IBF database' })
+                  callback({ error })
+                  return
+                default:
+                  error = 'database connection error: ' + errorCode
+                  callback({ error })
+                  return
+              }
             }
 
             // hash password
             var passwordHash = crypto.createHash('sha256').update(password).digest('hex')
 
             // get user ID
-            connection.query('SELECT id FROM user WHERE mail = ? AND passwordHash = ? AND confirmed = 1', [mail, passwordHash], function (err, rows) {
+            connection.query('SELECT id FROM user WHERE name = ? AND passwordHash = ? AND confirmed = 1', [name, passwordHash], function (err, rows) {
 
               // call back err if any
               if (err) {
@@ -138,7 +148,7 @@ module.exports = {
                 return
               }
 
-              // mail is unique, so only one or zero rows are possible
+              // name is unique, so only one or zero rows are possible
               if (rows.length === 0) {
                 const error = errorFactory.generate(constants.errors.invalid_credentials, null)
                 callback(callbackFactory.error(error, constants.responses.auth))
