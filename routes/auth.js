@@ -47,7 +47,7 @@ router.post('/verify', function (req, res) {
  */
 router.get('/login', function (req, res) {
   res.json(callbackFactory.documentation({ usage: {
-    mail: '[mail]',
+    user: '[name]',
     password: '[password]'
   }}))
 })
@@ -57,11 +57,11 @@ router.get('/login', function (req, res) {
  * creates a new 30-day token for the user
  *
  * Header: database
- * Body: mail, password
+ * Body: user, password
  */
 router.post('/login', function (req, res) {
 
-  auth.create(req.body.mail, req.body.password, req.get('Database'), function (result) {
+  auth.create(req.body.user, req.body.password, req.get('database'), function (result) {
     res.json(result)
   })
 })
