@@ -85,6 +85,10 @@
     "in_use": {
       "text": "~thing is already in use",
       "parameters": ["thing"]
+    },
+    "not_reached": {
+      "text": "~thing could not be reached. Not in VPN?",
+      "parameters": ["thing"]
     }
   }
 }
