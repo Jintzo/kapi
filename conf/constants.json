@@ -90,5 +90,10 @@
       "text": "~thing could not be reached. Not in VPN?",
       "parameters": ["thing"]
     }
+  },
+
+  "queries": {
+    "checkExistingUsers": "SELECT id FROM user WHERE mail = ? OR name = ?",
+    "addUser": "INSERT INTO user SET ?"
   }
 }
