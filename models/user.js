@@ -1,6 +1,5 @@
 // load needed modules
 const constants = require('./../conf/constants')
-var callbackFactory = require('./../factories/callback')
 var errorFactory = require('./../factories/error')
 var database = require('./../database')
 var crypto = require('crypto')
@@ -8,7 +7,6 @@ var crypto = require('crypto')
 // load needed validators
 var userValidator = require('./../validators/user')
 var databaseValidator = require('./../validators/database')
-
 module.exports = {
 
   /**
@@ -73,25 +71,26 @@ module.exports = {
               }
 
               // pool connection
-              database.pool(databaseName).getConnection(function (err, connection) {
+              database.pool(databaseName).getConnection(function (error, connection) {
 
-                // call back err if any
-                if (err) {
-                  callback(callbackFactory.error(err, constants.responses.register))
+                // call back error if any
+                if (error) {
+                  callback({ error })
                   return
                 }
 
                 // check that mail and name are not in use
-                connection.query(constants.queries.checkExistingUsers, [mail, name], function (err, rows) {
+                connection.query(constants.queries.checkExistingUsers, [mail, name], function (error, rows) {
 
-                  // call back err if any
-                  if (err) {
-                    callback(callbackFactory.error(err, constants.responses.register))
+                  // call back error if any
+                  if (error) {
+                    callback({ error })
                     return
                   }
 
                   if (rows.length !== 0) {
-                    callback(callbackFactory.error(constants.errors.in_use, {thing: 'mail'}))
+                    const error = errorFactory.generate(constants.errors.in_use, {thing: 'mail'})
+                    callback({ error })
                     return
                   } else {
 
@@ -99,14 +98,14 @@ module.exports = {
                     var passwordHash = crypto.createHash('sha256').update(password).digest('hex')
 
                     // insert new user into database
-                    connection.query(constants.queries.addUser, { name: name, mail: mail, passwordHash: passwordHash, confirmed: 0 }, function (err) {
+                    connection.query(constants.queries.addUser, { name: name, mail: mail, passwordHash: passwordHash, confirmed: 0 }, function (error) {
 
                       // call back err if any
-                      if (err) {
-                        callback(callbackFactory.error(err, constants.responses.register))
+                      if (error) {
+                        callback({ error })
                         return
                       } else {
-                        callback(callbackFactory.error('none', constants.responses.register))
+                        callback({ error: 'none' })
                       }
                     })
                   }
