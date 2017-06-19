@@ -13,6 +13,7 @@ module.exports = {
 
   /**
    * register a new user
+   * @param  {String}   name            name of the new user
    * @param  {String}   mail            mail of the new user
    * @param  {String}   password        password of the new user
    * @param  {String}   passwordConfirm confirmation copy of the password
@@ -21,31 +22,37 @@ module.exports = {
    * @param  {Function} callback        callback function
    * @return {void}
    */
-  register: function (mail, password, passwordConfirm, type, databaseName, callback) {
+  register: function (name, mail, password, passwordConfirm, databaseName, callback) {
 
-    // validate mail
-    userValidator.mail(mail, function (result) {
+    console.log('name: ' + name)
+    console.log('mail: ' + mail)
+    console.log('password: ' + password)
+    console.log('password confirm: ' + passwordConfirm)
+    console.log('database: ' + databaseName)
+
+    // validate name
+    userValidator.name(name, function (result) {
       if (errorFactory.containsError(result)) {
         callback(result)
         return
       }
 
-      // validate password
-      userValidator.password(password, function (result) {
+      // validate mail
+      userValidator.mail(mail, function (result) {
         if (errorFactory.containsError(result)) {
           callback(result)
           return
         }
 
-        // validate type
-        userValidator.type(type, function (result) {
+        // validate password
+        userValidator.password(password, function (result) {
           if (errorFactory.containsError(result)) {
             callback(result)
             return
           }
 
-          // validate databaseName
-          databaseValidator.name(databaseName, function (result) {
+          // validate passwordConfirm
+          userValidator.password(passwordConfirm, function (result) {
             if (errorFactory.containsError(result)) {
               callback(result)
               return
@@ -53,21 +60,20 @@ module.exports = {
 
             // check that passwords match
             if (password !== passwordConfirm) {
-              callback(callbackFactory.error(constants.errors.no_match({things: 'passwords'})))
+              const error = errorFactory.generate(constants.errors.no_match, { things: 'passwords' })
+              callback({ error })
               return
             }
 
-            // pool connection
-            database.pool(databaseName).getConnection(function (err, connection) {
-
-              // call back err if any
-              if (err) {
-                callback(callbackFactory.error(err, constants.responses.register))
+            // validate databaseName
+            databaseValidator.name(databaseName, function (result) {
+              if (errorFactory.containsError(result)) {
+                callback(result)
                 return
               }
 
-              // check that mail is not in use
-              connection.query('SELECT id FROM user WHERE mail = ?', [mail], function (err, rows) {
+              // pool connection
+              database.pool(databaseName).getConnection(function (err, connection) {
 
                 // call back err if any
                 if (err) {
@@ -75,26 +81,36 @@ module.exports = {
                   return
                 }
 
-                if (rows.length !== 0) {
-                  callback(callbackFactory.error(constants.errors.in_use, {thing: 'mail'}))
-                  return
-                } else {
+                // check that mail and name are not in use
+                connection.query(constants.queries.checkExistingUsers, [mail, name], function (err, rows) {
 
-                  // calculate password hash
-                  var passwordHash = crypto.createHash('sha256').update(password).digest('hex')
+                  // call back err if any
+                  if (err) {
+                    callback(callbackFactory.error(err, constants.responses.register))
+                    return
+                  }
 
-                  // insert new user into database
-                  connection.query('INSERT INTO user SET ?', { mail: mail, passwordHash: passwordHash, type: type, confirmed: 0 }, function (err) {
+                  if (rows.length !== 0) {
+                    callback(callbackFactory.error(constants.errors.in_use, {thing: 'mail'}))
+                    return
+                  } else {
 
-                    // call back err if any
-                    if (err) {
-                      callback(callbackFactory.error(err, constants.responses.register))
-                      return
-                    } else {
-                      callback(callbackFactory.error('none', constants.responses.register))
-                    }
-                  })
-                }
+                    // calculate password hash
+                    var passwordHash = crypto.createHash('sha256').update(password).digest('hex')
+
+                    // insert new user into database
+                    connection.query(constants.queries.addUser, { name: name, mail: mail, passwordHash: passwordHash, confirmed: 0 }, function (err) {
+
+                      // call back err if any
+                      if (err) {
+                        callback(callbackFactory.error(err, constants.responses.register))
+                        return
+                      } else {
+                        callback(callbackFactory.error('none', constants.responses.register))
+                      }
+                    })
+                  }
+                })
               })
             })
           })
