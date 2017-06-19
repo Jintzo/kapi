@@ -88,8 +88,6 @@ module.exports = {
    * @return {void}
    */
   available: function (callback) {
-    callback(callbackFactory.single({
-      available: constants.database.available
-    }, constants.responses.database))
+    callback(constants.database.available)
   }
 }
