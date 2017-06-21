@@ -123,7 +123,7 @@ module.exports = {
    * @param  {Function} callback     callback function
    * @return {void}
    */
-  getEmptyProjects: function (databaseName, token, callback) {
+  getEmpty: function (databaseName, token, callback) {
 
     // validate database
     databaseValidator.name(databaseName, function (result) {
