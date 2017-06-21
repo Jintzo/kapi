@@ -1,6 +1,5 @@
 // load required modules
 var express = require('express')
-var callbackFactory = require('./../factories/callback')
 
 // set up router
 var router = express.Router()
@@ -13,7 +12,7 @@ var auth = require('./../models/auth')
  * show available endpoints
  */
 router.get('/', function (req, res) {
-  res.json(callbackFactory.documentation({ subroutes: ['login', 'logout', 'verify'] }))
+  res.json({ subroutes: ['login', 'logout', 'verify'] })
 })
 
 /**
@@ -21,10 +20,10 @@ router.get('/', function (req, res) {
  * returns documentation on how to use the verify route
  */
 router.get('/verify', function (req, res) {
-  res.json(callbackFactory.documentation({ usage: {
+  res.json({ usage: {
     userID: '[userID]',
     token: '[token]'
-  }}))
+  }})
 })
 
 /**
@@ -36,7 +35,7 @@ router.get('/verify', function (req, res) {
  */
 router.post('/verify', function (req, res) {
 
-  auth.verify(req.body.userID, req.body.token, req.get('Database'), function (result) {
+  auth.verify(req.body.userID, req.body.token, req.get('database'), function (result) {
     res.json(result)
   })
 })
@@ -46,10 +45,10 @@ router.post('/verify', function (req, res) {
  * returns documentation on how to use the login route
  */
 router.get('/login', function (req, res) {
-  res.json(callbackFactory.documentation({ usage: {
+  res.json({ usage: {
     user: '[name]',
     password: '[password]'
-  }}))
+  }})
 })
 
 /**
@@ -62,30 +61,6 @@ router.get('/login', function (req, res) {
 router.post('/login', function (req, res) {
 
   auth.create(req.body.user, req.body.password, req.get('database'), function (result) {
-    res.json(result)
-  })
-})
-
-/**
- * GET /logout
- * returns documentation on how to use the logout route
- */
-router.get('/logout', function (req, res) {
-  res.json(callbackFactory.documentation({ usage: {
-    userID: '[userID]',
-    token: '[token]'
-  }}))
-})
-
-/**
- * POST /logout
- * invalidates a token
- *
- * Header: database
- * Body: userID, token
- */
-router.post('/logout', function (req, res) {
-  auth.delete(req.body.userID, req.body.token, req.get('Database'), function (result) {
     res.json(result)
   })
 })

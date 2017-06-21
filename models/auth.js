@@ -99,7 +99,7 @@ module.exports = {
 
     // validate database name
     databaseValidator.name(databaseName, function (result) {
-      if (result.error !== 'none') {
+      if (errorFactory.containsError(result)) {
         callback(result)
         return
       }
@@ -156,6 +156,7 @@ module.exports = {
                 return
               } else {
                 module.exports.createByID(rows[0].id, databaseName, function (result) {
+                  console.log('creating session for user id ' + rows[0].id)
                   callback(result)
                 })
               }
@@ -263,110 +264,6 @@ module.exports = {
             return
           })
         }
-      })
-    })
-  },
-
-  /**
-   * delete a session
-   * @param  {Integer}  userID       ID of the user
-   * @param  {String}   token        token of the user
-   * @param  {String}   databaseName name of the database
-   * @param  {Function} callback     callback function
-   * @return {void}
-   */
-  delete: function (userID, token, databaseName, callback) {
-
-    // validate databaseName
-    databaseValidator.name(databaseName, function (result) {
-      if (errorFactory.containsError(result)) {
-        callback(result)
-        return
-      }
-
-      // validate userID
-      userValidator.id(userID, function (result) {
-        if (errorFactory.containsError(result)) {
-          callback(result)
-          return
-        }
-
-        // validate token
-        authValidator.token(token, function (result) {
-          if (errorFactory.containsError(result)) {
-            callback(result)
-            return
-          }
-
-          // pool connection
-          database.pool(databaseName).getConnection(function (error, connection) {
-
-            // call back err if any
-            if (error) {
-              callback({ error })
-              return
-            }
-
-            // delete session
-            connection.query('DELETE FROM session WHERE userID = ? AND token = ?', [userID, token], function (error) {
-
-              // call back err if any
-              if (error) {
-                callback({ error })
-                return
-              } else {
-                callback({ error: 'none' })
-              }
-            })
-          })
-        })
-      })
-    })
-  },
-
-  /**
-   * remove session of a user
-   * @param  {Integer}  userID       ID of the user
-   * @param  {String}   databaseName name of the database
-   * @param  {Function} callback     callback function
-   * @return {void}
-   */
-  removeFromUser: function (userID, databaseName, callback) {
-
-    // validate databaseName
-    databaseValidator.name(databaseName, function (result) {
-      if (errorFactory.containsError(result)) {
-        callback(result)
-        return
-      }
-
-      // validate userID
-      userValidator.id(userID, function (result) {
-        if (errorFactory.containsError(result)) {
-          callback(result)
-          return
-        }
-      })
-
-      // pool database connection
-      database.pool(databaseName).getConnection(function (error, connection) {
-
-        // call back err if any
-        if (error) {
-          callback({ error })
-          return
-        }
-
-        // delete session
-        connection.query('DELETE FROM session WHERE userID = ?', [userID], function (error) {
-          // call back err if any
-          if (error) {
-            callback({ error })
-            return
-          } else {
-            callback({ error: 'none' })
-          }
-        })
       })
     })
   }
