@@ -1,6 +1,5 @@
 // load required modules
 const errorFactory = require('./../factories/error')
-const callbackFactory = require('./../factories/callback')
 const database = require('./../database')
 const constants = require('./../conf/constants')
 
@@ -25,11 +24,11 @@ module.exports = {
       }
 
       // pool connection
-      database.pool(databaseName).getConnection(function (err, connection) {
+      database.pool(databaseName).getConnection(function (error, connection) {
 
         // call back err if any
-        if (err) {
-          callback(callbackFactory.error(err, constants.responses.database))
+        if (error) {
+          callback({ error })
           return
         }
 
@@ -38,42 +37,42 @@ module.exports = {
         let particleCount = ''
 
         // get database size
-        connection.query('SELECT table_schema, sum( data_length + index_length ) / 1024 / 1024 as size FROM information_schema.TABLES WHERE table_schema = ? GROUP BY table_schema', [databaseName], function (err, rows) {
+        connection.query('SELECT table_schema, sum( data_length + index_length ) / 1024 / 1024 as size FROM information_schema.TABLES WHERE table_schema = ? GROUP BY table_schema', [databaseName], function (error, rows) {
 
           // call back err if any
-          if (err) {
-            callback(callbackFactory.error(err, constants.responses.database))
+          if (error) {
+            callback({ error })
             return
           }
 
           size = Math.round(rows[0].size * 10) / 10
 
           // get sample count
-          connection.query('SELECT COUNT(*) AS count FROM probe', function (err, rows) {
+          connection.query('SELECT COUNT(*) AS count FROM probe', function (error, rows) {
 
             // call back err if any
-            if (err) {
-              callback(callbackFactory.error(err, constants.responses.database))
+            if (error) {
+              callback({ error })
               return
             }
 
             sampleCount = rows[0].count
 
             // get particle count
-            connection.query('SELECT COUNT(*) AS count FROM daten', function (err, rows) {
+            connection.query('SELECT COUNT(*) AS count FROM daten', function (error, rows) {
 
               // call back err if any
-              if (err) {
-                callback(callbackFactory.error(err, constants.responses.database))
+              if (error) {
+                callback({ error })
                 return
               }
 
               particleCount = rows[0].count
 
               // return data
-              callback(callbackFactory.single({
+              callback({
                 size, sampleCount, particleCount
-              }, constants.responses.database))
+              })
               return
             })
           })

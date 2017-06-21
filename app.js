@@ -2,8 +2,6 @@
 let express = require('express')
 let path = require('path')
 let logger = require('morgan')
-let constants = require('./conf/constants')
-let callbackFactory = require('./factories/callback')
 
 // initialize app
 var app = express()
@@ -56,7 +54,7 @@ app.use(function (req, res, next) {
 app.use(function (err, req, res, next) {
   // return error
   res.status(err.status || 500)
-  res.json(callbackFactory.error(err, constants.responses.general))
+  res.json({ error: err })
 })
 
 module.exports = app
