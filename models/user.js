@@ -22,12 +22,6 @@ module.exports = {
    */
   register: function (name, mail, password, passwordConfirm, databaseName, callback) {
 
-    console.log('name: ' + name)
-    console.log('mail: ' + mail)
-    console.log('password: ' + password)
-    console.log('password confirm: ' + passwordConfirm)
-    console.log('database: ' + databaseName)
-
     // validate name
     userValidator.name(name, function (result) {
       if (errorFactory.containsError(result)) {
@@ -89,7 +83,7 @@ module.exports = {
                   }
 
                   if (rows.length !== 0) {
-                    const error = errorFactory.generate(constants.errors.in_use, {thing: 'mail'})
+                    const error = errorFactory.generate(constants.errors.in_use, {thing: 'mail or username'})
                     callback({ error })
                     return
                   } else {
