@@ -102,6 +102,11 @@ module.exports = {
                   })
                 }
               }
+
+              // add tangling project
+              if (projectData !== {}) {
+                resultData.push(projectData)
+              }
               callback(resultData)
             })
           })
