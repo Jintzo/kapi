@@ -70,7 +70,7 @@ module.exports = {
                 if (oldID !== rows[i].projectID) {
 
                   // push old project data and start next project
-                  if (projectData !== {}) {
+                  if (projectData.name) {
                     resultData.push(projectData)
                   }
 
@@ -105,7 +105,7 @@ module.exports = {
               }
 
               // add tangling project
-              if (projectData !== {}) {
+              if (projectData.name) {
                 resultData.push(projectData)
               }
               callback(resultData)
