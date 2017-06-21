@@ -1,6 +1,5 @@
 // load required modules
 let express = require('express')
-var callbackFactory = require('./../factories/callback')
 
 // set up router
 var router = express.Router()
@@ -10,7 +9,7 @@ var router = express.Router()
  * show available endpoints
 */
 router.get('/', function (req, res, next) {
-  res.json(callbackFactory.documentation({ subroutes: ['auth', 'databases'] }))
+  res.json({ subroutes: ['auth', 'databases'] })
 })
 
 module.exports = router

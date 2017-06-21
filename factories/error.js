@@ -47,15 +47,12 @@ module.exports = {
   /**
    * checks if a error callback object is an error or not
    *
-   * @param  {Object}  error the error callback object to be verified
-   * @return {Boolean}               whether or not the provided callback object contains an error
+   * @param  {Object}  callbackObject the error callback object to be verified
+   * @return {Boolean}                whether or not the provided callback object contains an error
    */
-  containsError: function (error) {
-    return (typeof error === 'object' &&
-      Array.isArray(error.errors) &&
-      error.errors.length >= 1 &&
-      typeof error.errors[0] === 'object' &&
-      typeof error.errors[0].detail === 'string' &&
-      error.errors[0].detail !== 'none')
+  containsError: function (callbackObject) {
+    return (typeof callbackObject === 'object' &&
+      typeof callbackObject.error === 'string' &&
+      callbackObject.error !== 'none')
   }
 }

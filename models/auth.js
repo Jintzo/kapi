@@ -1,6 +1,5 @@
 // load needed modules
 var crypto = require('crypto')
-var callbackFactory = require('./../factories/callback')
 var errorFactory = require('./../factories/error')
 var database = require('./../database')
 var constants = require('./../conf/constants')
@@ -44,25 +43,26 @@ module.exports = {
           }
 
           // pool database connection
-          database.pool(databaseName).getConnection(function (err, connection) {
+          database.pool(databaseName).getConnection(function (error, connection) {
 
             // call back err if any
-            if (err) {
-              callback(callbackFactory.error(err, constants.responses.database))
+            if (error) {
+              callback({ error })
               return
             }
 
             // check if entry exists in database
-            connection.query('SELECT * FROM session WHERE userID = ? AND token = ?', [userID, token], function (err, rows) {
+            connection.query('SELECT * FROM session WHERE userID = ? AND token = ?', [userID, token], function (error, rows) {
 
               // call back err if any
-              if (err) {
-                callback(callbackFactory.error(err, constants.responses.database))
+              if (error) {
+                callback({ error })
                 return
               }
 
               if (rows.length === 0) {
-                callback(callbackFactory.error(constants.errors.no_such, {thing: 'session'}))
+                const error = errorFactory.generate(constants.errors.no_such, {thing: 'session'})
+                callback({ error })
                 return
               } else {
 
@@ -72,10 +72,11 @@ module.exports = {
                 var timeDifference = validUntilDate.getTime() - nowDate.getTime()
 
                 if (timeDifference <= 0) {
-                  callback(callbackFactory.single({ error: 'none', status: 'invalid' }, constants.responses.auth))
+                  const error = errorFactory.generate(constants.errors.invalid, { thing: 'session' })
+                  callback({ error })
                   return
                 } else {
-                  callback(callbackFactory.single({ error: 'none', status: 'valid' }))
+                  callback({ error: 'none' })
                   return
                 }
               }
@@ -88,13 +89,13 @@ module.exports = {
 
   /**
    * create a new session or update an existing one
-   * @param  {String}   mail         mail of the user
+   * @param  {String}   name         name of the user
    * @param  {String}   password     password of the user
    * @param  {String}   databaseName name of the database
    * @param  {Function} callback     callback function
    * @return {void}
    */
-  create: function (mail, password, databaseName, callback) {
+  create: function (name, password, databaseName, callback) {
 
     // validate database name
     databaseValidator.name(databaseName, function (result) {
@@ -103,8 +104,8 @@ module.exports = {
         return
       }
 
-      // validate mail
-      userValidator.mail(mail, function (result) {
+      // validate name
+      userValidator.name(name, function (result) {
         if (errorFactory.containsError(result)) {
           callback(result)
           return
@@ -122,29 +123,40 @@ module.exports = {
 
             // call back err if any
             if (err) {
-              callback(callbackFactory.error(err, constants.responses.database))
-              return
+              let error = ''
+              const errorCode = err.code
+              switch (errorCode) {
+                case 'ENOTFOUND':
+                  error = errorFactory.generate(constants.errors.not_reached, { thing: 'IBF database' })
+                  callback({ error })
+                  return
+                default:
+                  error = 'database connection error: ' + errorCode
+                  callback({ error })
+                  return
+              }
             }
 
             // hash password
             var passwordHash = crypto.createHash('sha256').update(password).digest('hex')
 
             // get user ID
-            connection.query('SELECT id FROM user WHERE mail = ? AND passwordHash = ? AND confirmed = 1', [mail, passwordHash], function (err, rows) {
+            connection.query('SELECT id FROM user WHERE name = ? AND passwordHash = ? AND confirmed = 1', [name, passwordHash], function (error, rows) {
 
               // call back err if any
-              if (err) {
-                callback(callbackFactory.error(err, constants.responses.auth))
+              if (error) {
+                callback({ error })
                 return
               }
 
-              // mail is unique, so only one or zero rows are possible
+              // name is unique, so only one or zero rows are possible
               if (rows.length === 0) {
-                const error = errorFactory.generate(constants.errors.invalid_credentials, null)
-                callback(callbackFactory.error(error, constants.responses.auth))
+                const error = errorFactory.generate(constants.errors.invalid, { thing: 'credentials' })
+                callback({ error })
                 return
               } else {
                 module.exports.createByID(rows[0].id, databaseName, function (result) {
+                  console.log('creating session for user id ' + rows[0].id)
                   callback(result)
                 })
               }
@@ -165,20 +177,20 @@ module.exports = {
   createByID: function (userID, databaseName, callback) {
 
     // pool database connection
-    database.pool(databaseName).getConnection(function (err, connection) {
+    database.pool(databaseName).getConnection(function (error, connection) {
 
       // call back err if any
-      if (err) {
-        callback(callbackFactory.error(err, constants.responses.database))
+      if (error) {
+        callback({ error })
         return
       }
 
       // check if old session can be reactivated
-      connection.query('SELECT * FROM session WHERE userID = ?', [userID], function (err, rows) {
+      connection.query('SELECT * FROM session WHERE userID = ?', [userID], function (error, rows) {
 
         // call back err if any
-        if (err) {
-          callback(callbackFactory.error(err, constants.responses.database))
+        if (error) {
+          callback({ error })
           return
         }
 
@@ -195,29 +207,28 @@ module.exports = {
           var shaToken = crypto.createHash('sha256').update(newToken).digest('hex')
 
           // insert new session into database
-          connection.query('INSERT INTO session SET ?', { userID: userID, token: shaToken, validUntil: newTimestamp }, function (err) {
+          connection.query('INSERT INTO session SET ?', { userID: userID, token: shaToken, validUntil: newTimestamp }, function (error) {
 
             // call back err if any
-            if (err) {
-              callback(callbackFactory.error(err, constants.responses.database))
+            if (error) {
+              callback({ error })
               return
             }
 
             // get user data
-            connection.query('SELECT * FROM user WHERE id = ?', [userID], function (err, rows) {
+            connection.query('SELECT * FROM user WHERE id = ?', [userID], function (error, rows) {
 
               // call back err if any
-              if (err) {
-                callback(callbackFactory.error(err, constants.responses.database))
+              if (error) {
+                callback({ error })
                 return
               }
 
               // call back token and user data
-              callback(callbackFactory.single({
+              callback({
                 userID: userID,
-                type: rows[0].type,
                 token: shaToken
-              }, constants.responses.auth))
+              })
             })
           })
           return
@@ -227,137 +238,32 @@ module.exports = {
           var id = rows[0].id
           var token = rows[0].token
 
-          connection.query('UPDATE session SET validUntil = ? WHERE id = ?', [newTimestamp, id], function (err) {
+          connection.query('UPDATE session SET validUntil = ? WHERE id = ?', [newTimestamp, id], function (error) {
 
             // call back err if any
-            if (err) {
-              callback(callbackFactory.error(err, constants.responses.database))
+            if (error) {
+              callback({ error })
               return
             }
 
             // get user data
-            connection.query('SELECT * FROM user WHERE id = ?', [userID], function (err, rows) {
+            connection.query('SELECT * FROM user WHERE id = ?', [userID], function (error, rows) {
 
               // call back err if any
-              if (err) {
-                callback(callbackFactory.error(err, constants.responses.database))
+              if (error) {
+                callback({ error })
                 return
               }
 
               // call back re-validated token and user data
-              callback(callbackFactory.single({
+              callback({
                 userID: userID,
-                type: rows[0].type,
                 token: token
-              }, constants.responses.auth))
+              })
             })
             return
           })
         }
-      })
-    })
-  },
-
-  /**
-   * delete a session
-   * @param  {Integer}  userID       ID of the user
-   * @param  {String}   token        token of the user
-   * @param  {String}   databaseName name of the database
-   * @param  {Function} callback     callback function
-   * @return {void}
-   */
-  delete: function (userID, token, databaseName, callback) {
-
-    // validate databaseName
-    databaseValidator.name(databaseName, function (result) {
-      if (errorFactory.containsError(result)) {
-        callback(result)
-        return
-      }
-
-      // validate userID
-      userValidator.id(userID, function (result) {
-        if (errorFactory.containsError(result)) {
-          callback(result)
-          return
-        }
-
-        // validate token
-        authValidator.token(token, function (result) {
-          if (errorFactory.containsError(result)) {
-            callback(result)
-            return
-          }
-
-          // pool connection
-          database.pool(databaseName).getConnection(function (err, connection) {
-
-            // call back err if any
-            if (err) {
-              callback(callbackFactory.error(err, constants.responses.database))
-              return
-            }
-
-            // delete session
-            connection.query('DELETE FROM session WHERE userID = ? AND token = ?', [userID, token], function (err) {
-
-              // call back err if any
-              if (err) {
-                callback(callbackFactory.error(err, constants.responses.database))
-                return
-              } else {
-                callback(callbackFactory.error('none', constants.response.auth))
-              }
-            })
-          })
-        })
-      })
-    })
-  },
-
-  /**
-   * remove session of a user
-   * @param  {Integer}  userID       ID of the user
-   * @param  {String}   databaseName name of the database
-   * @param  {Function} callback     callback function
-   * @return {void}
-   */
-  removeFromUser: function (userID, databaseName, callback) {
-
-    // validate databaseName
-    databaseValidator.name(databaseName, function (result) {
-      if (errorFactory.containsError(result)) {
-        callback(result)
-        return
-      }
-
-      // validate userID
-      userValidator.id(userID, function (result) {
-        if (errorFactory.containsError(result)) {
-          callback(result)
-          return
-        }
-      })
-
-      // pool database connection
-      database.pool(databaseName).getConnection(function (err, connection) {
-
-        // call back err if any
-        if (err) {
-          callback(callbackFactory.error(err, constants.responses.database))
-          return
-        }
-
-        // delete session
-        connection.query('DELETE FROM session WHERE userID = ?', [userID], function (err) {
-          // call back err if any
-          if (err) {
-            callback(callbackFactory.error(err, constants.responses.database))
-            return
-          } else {
-            callback(callbackFactory.error('none', constants.response.auth))
-          }
-        })
       })
     })
   }

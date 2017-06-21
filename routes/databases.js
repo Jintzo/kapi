@@ -1,6 +1,5 @@
 // load required modules
 var express = require('express')
-var callbackFactory = require('./../factories/callback')
 
 // set up router
 var router = express.Router()
@@ -13,7 +12,7 @@ var databases = require('./../models/databases')
  * show available endpoints
  */
 router.get('/', function (req, res) {
-  res.json(callbackFactory.documentation({ subroutes: ['stats', 'available'] }))
+  res.json({ subroutes: ['stats', 'available'] })
 })
 
 /**
@@ -21,7 +20,7 @@ router.get('/', function (req, res) {
  * returns stats on the provided database
  */
 router.get('/stats', function (req, res) {
-  databases.stats(req.get('Database'), function (result) {
+  databases.stats(req.get('database'), function (result) {
     res.json(result)
   })
 })

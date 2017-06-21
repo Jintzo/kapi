@@ -1,6 +1,5 @@
 // load needed modules
 var constants = require('./../conf/constants')
-var callbackFactory = require('./../factories/callback')
 var errorFactory = require('./../factories/error')
 var validator = require('validator')
 
@@ -18,7 +17,7 @@ module.exports = {
     // check that the id is defined
     if (typeof id === 'undefined' || id === null) {
       const error = errorFactory.generate(constants.errors.not_defined, {thing: 'id'})
-      callback(callbackFactory.error(error, constants.responses.validate))
+      callback({ error })
       return
     }
 
@@ -28,27 +27,64 @@ module.exports = {
     // check that the id isn't shorter than 1 character
     if (id.length < 1) {
       const error = errorFactory.generate(constants.errors.too_short, {thing: 'id'})
-      callback(callbackFactory.error(error, constants.responses.validate))
+      callback({ error })
       return
     }
 
     // check that the id isn't longer than the default field length
     if (id.length > constants.lengths.default) {
       const error = errorFactory.generate(constants.errors.too_long, {thing: 'id'})
-      callback(callbackFactory.error(error, constants.responses.validate))
+      callback({ error })
       return
     }
 
     // check that the id is an integer
     if (!validator.isInt(id)) {
       const error = errorFactory.generate(constants.errors.wrong_format, {thing: 'id'})
-      callback(callbackFactory.error(error, constants.responses.validate))
+      callback({ error })
       return
     }
 
     // valid
-    callback(callbackFactory.error('none', constants.responses.validate))
+    callback({ error: 'none' })
     return
+  },
+
+  /**
+   * validate a name.
+   *
+   * @param  {String}   name     the name to be validated
+   * @param  {Function} callback callback function
+   * @return {void}
+   */
+  name: function (name, callback) {
+
+    // check that name is defined
+    if (typeof name === 'undefined' || name === null) {
+      const error = errorFactory.generate(constants.errors.not_defined, {thing: 'name'})
+      callback({ error })
+      return
+    }
+
+    // convert to string
+    name = name.toString()
+
+    // check that the name isn't shorter than 1 character
+    if (name.length < 1) {
+      const error = errorFactory.generate(constants.errors.too_short, {thing: 'name'})
+      callback({ error })
+      return
+    }
+
+    // check that the name isn't longer than the default field length
+    if (name.length > constants.lengths.default) {
+      const error = errorFactory.generate(constants.errors.too_long, {thing: 'name'})
+      callback({ error })
+      return
+    }
+
+    // valid
+    callback({ error: 'none' })
   },
 
   /**
@@ -62,7 +98,7 @@ module.exports = {
     // check that mail is defined
     if (typeof mail === 'undefined' || mail === null) {
       const error = errorFactory.generate(constants.errors.not_defined, {thing: 'mail'})
-      callback(callbackFactory.error(error, constants.responses.validate))
+      callback({ error })
       return
     }
 
@@ -72,12 +108,12 @@ module.exports = {
     // check that mail is correctly formatted
     if (!validator.isEmail(mail)) {
       const error = errorFactory.generate(constants.errors.invalid, {thing: 'mail'})
-      callback(callbackFactory.error(error, constants.responses.validate))
+      callback({ error })
       return
     }
 
     // valid
-    callback(callbackFactory.error('none', constants.responses.validate))
+    callback({ error: 'none' })
     return
   },
 
@@ -92,7 +128,7 @@ module.exports = {
     // check that password is defined
     if (typeof password === 'undefined' || password === null) {
       const error = errorFactory.generate(constants.errors.not_defined, {thing: 'password'})
-      callback(callbackFactory.error(error, constants.responses.validate))
+      callback({ error })
       return
     }
 
@@ -102,12 +138,12 @@ module.exports = {
     // check that password is correctly formatted
     if (password.length < 8) {
       const error = errorFactory.generate(constants.errors.too_short, {thing: 'password'})
-      callback(callbackFactory.error(error, constants.responses.validate))
+      callback({ error })
       return
     }
 
     // valid
-    callback(callbackFactory.error('none', constants.responses.validate))
+    callback({ error: 'none' })
     return
   },
 
@@ -122,7 +158,7 @@ module.exports = {
     // check that the passwordHash is defined
     if (typeof passwordHash === 'undefined' || passwordHash === null) {
       const error = errorFactory.generate(constants.errors.not_defined, {thing: 'passwordHash'})
-      callback(callbackFactory.error(error, constants.responses.validate))
+      callback({ error })
       return
     }
 
@@ -132,12 +168,12 @@ module.exports = {
     // check if passwordHash is a SHA-256 hash
     if (!passwordHash.match(/^[a-fA-F0-9]{64}$/)) {
       const error = errorFactory.generate(constants.errors.wrong_format, {thing: 'passwordHash'})
-      callback(callbackFactory.error(error, constants.responses.validate))
+      callback({ error })
       return
     }
 
     // valid
-    callback(callbackFactory.error('none', constants.responses.validate))
+    callback({ error: 'none' })
     return
   },
 
@@ -152,7 +188,7 @@ module.exports = {
     // check that type is defined
     if (typeof type === 'undefined' || type === null) {
       const error = errorFactory.generate(constants.errors.not_defined, {thing: 'type'})
-      callback(callbackFactory.error(error, constants.responses.validate))
+      callback({ error })
       return
     }
 
@@ -169,12 +205,12 @@ module.exports = {
     }
     if (!valid) {
       const error = errorFactory.generate(constants.errors.invalid, {thing: 'type'})
-      callback(callbackFactory.error(error, constants.responses.validate))
+      callback({ error })
       return
     }
 
     // valid
-    callback(callbackFactory.error('none', constants.responses.validate))
+    callback({ error: 'none' })
     return
   },
 
@@ -189,7 +225,7 @@ module.exports = {
     // check that confirmed is defined
     if (typeof confirmed === 'undefined' || confirmed === null) {
       const error = errorFactory.generate(constants.errors.not_defined, {thing: 'confirmed'})
-      callback(callbackFactory.error(error, constants.responses.validate))
+      callback({ error })
       return
     }
 
@@ -199,12 +235,12 @@ module.exports = {
     // check that isSupervisor is either 0 or 1
     if (confirmed !== '0' && confirmed !== '1') {
       const error = errorFactory.generate(constants.errors.wrong_format, {thing: 'confirmed'})
-      callback(callbackFactory.error(error, constants.responses.validate))
+      callback({ error })
       return
     }
 
     // valid
-    callback(callbackFactory.error('none', constants.responses.validate))
+    callback({ error: 'none' })
     return
   }
 }

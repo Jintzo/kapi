@@ -340,7 +340,7 @@ describe('auth route', function () {
     })
 
     it('should return an error if invalid mail is specified', function (done) {
-      chai.request(app).post('/auth/login').set('Database', 'development').send({ mail: 'abc@@yahoo.de' }).end(function (err, res) {
+      chai.request(app).post('/auth/login').set('Database', 'KFA_phpentwicklung').send({ mail: 'abc@@yahoo.de' }).end(function (err, res) {
 
         // basic checks
         should.exist(res)
@@ -366,7 +366,7 @@ describe('auth route', function () {
     })
 
     it('should return an error if no password is specified', function (done) {
-      chai.request(app).post('/auth/login').set('Database', 'development').send({ mail: 'yolo@web.de', password: null }).end(function (err, res) {
+      chai.request(app).post('/auth/login').set('Database', 'KFA_phpentwicklung').send({ mail: 'yolo@web.de', password: null }).end(function (err, res) {
 
         // basic checks
         should.exist(res)
@@ -392,7 +392,7 @@ describe('auth route', function () {
     })
 
     it('should return an error if invalid password is specified', function (done) {
-      chai.request(app).post('/auth/login').set('Database', 'development').send({ mail: 'yolo@web.de', password: '' }).end(function (err, res) {
+      chai.request(app).post('/auth/login').set('Database', 'KFA_phpentwicklung').send({ mail: 'yolo@web.de', password: '' }).end(function (err, res) {
 
         // basic checks
         should.exist(res)
@@ -417,54 +417,9 @@ describe('auth route', function () {
       })
     })
 
-    it('should return an error if invalid mail-password-combination is specified', function (done) {
-      chai.request(app).post('/auth/login').set('Database', 'development').send({ mail: 'yolo@web.de', password: 'üzügümülübrü' }).end(function (err, res) {
+    it('should return an error if invalid mail-password-combination is specified')
 
-        // basic checks
-        should.exist(res)
-        should.not.exist(err)
-        res.should.have.status(200)
-
-        // structure checks
-        res.body.should.be.a('object')
-        res.body.should.have.property('errors')
-        res.body.errors.should.be.a('array')
-        res.body.errors.should.have.length(1)
-
-        // error checks
-        res.body.errors[0].should.be.a('object')
-        res.body.errors[0].should.have.property('title')
-        res.body.errors[0].title.should.be.a('string')
-        res.body.errors[0].title.should.equal('response-auth')
-        res.body.errors[0].should.have.property('detail')
-        res.body.errors[0].detail.should.be.a('string')
-        res.body.errors[0].detail.should.equal('invalid credentials')
-        done()
-      })
-    })
-
-    it('should return token if valid mail-password-combination is specified', function (done) {
-      chai.request(app).post('/auth/login').set('Database', 'development').send({ mail: 'yolo@web.de', password: 'rosa' }).end(function (err, res) {
-
-        // basic checks
-        should.exist(res)
-        should.not.exist(err)
-        res.should.have.status(200)
-
-        // structure checks
-        res.body.should.be.a('object')
-        res.body.should.have.property('data')
-        res.body.data.should.be.a('object')
-        res.body.data.should.have.property('attributes')
-        res.body.data.attributes.should.be.a('object')
-
-        // token checks
-        res.body.data.attributes.should.have.property('token')
-        res.body.data.attributes.token.should.be.a('string')
-        res.body.data.attributes.token.should.have.length(64)
-        done()
-      })
-    })
+    it('should return token if valid mail-password-combination is specified')
   })
 
   describe('GET /logout', function () {
@@ -729,7 +684,7 @@ describe('databases route', function () {
     })
 
     it('should return stats about the specified database', function (done) {
-      chai.request(app).get('databases/stats').set('Database', 'KFA_phpentwicklung').end(function (err, res) {
+      chai.request(app).get('/databases/stats').set('Database', 'KFA_phpentwicklung').end(function (err, res) {
 
         // basic checks
         should.exist(res)
@@ -751,9 +706,9 @@ describe('databases route', function () {
         res.body.data.attributes.should.have.property('sampleCount')
         res.body.data.attributes.sampleCount.should.be.a('number')
 
-        // content checks -- particlaCount
+        // content checks -- particleCount
         res.body.data.attributes.should.have.property('particleCount')
-        res.body.data.attributes.particlaCount.should.be.a('number')
+        res.body.data.attributes.particleCount.should.be.a('number')
 
         done()
       })
@@ -763,7 +718,7 @@ describe('databases route', function () {
   describe('GET /available', function () {
 
     it('should return an array of available databases', function (done) {
-      chai.request(app).get('databases/available').end(function (err, res) {
+      chai.request(app).get('/databases/available').end(function (err, res) {
 
         // basic checks
         should.exist(res)
@@ -778,11 +733,519 @@ describe('databases route', function () {
         res.body.data.attributes.should.be.a('object')
 
         // databases checks
-        res.body.data.attributes.should.have.property('databases')
-        res.body.data.attributes.databases.should.be.a('array')
+        res.body.data.attributes.should.have.property('available')
+        res.body.data.attributes.available.should.be.a('array')
 
         done()
       })
     })
+  })
+})
+
+// /////////////
+// USER ROUTE //
+// /////////////
+describe('user route', function () {
+
+  describe('GET /', function () {
+
+    it('should return a list of subroutes', function (done) {
+      chai.request(app).get('/user').end(function (err, res) {
+        should.exist(res)
+        should.not.exist(err)
+        res.should.have.status(200)
+        res.body.should.be.a('object')
+        res.body.should.have.property('data')
+        res.body.data.should.be.a('object')
+        res.body.data.should.have.property('attributes')
+        res.body.data.attributes.should.be.a('object')
+        res.body.data.attributes.should.have.property('subroutes')
+        res.body.data.attributes.subroutes.should.be.a('array')
+        done()
+      })
+    })
+  })
+
+  describe('GET /register', function () {
+
+    it('should return documentation', function (done) {
+      chai.request(app).get('/user/register').end(function (err, res) {
+        should.exist(res)
+        should.not.exist(err)
+        res.should.have.status(200)
+        res.body.should.be.a('object')
+        res.body.should.have.property('data')
+        res.body.data.should.be.a('object')
+        res.body.data.should.have.property('attributes')
+        res.body.data.attributes.should.be.a('object')
+        res.body.data.attributes.should.have.property('usage')
+        res.body.data.attributes.usage.should.be.a('object')
+        done()
+      })
+    })
+  })
+
+  describe('POST /register', function () {
+
+    it('should return an error if no database is specified', function (done) {
+      chai.request(app).post('/user/register').set('Database', null).send({ mail: 'yolo@web.de', password: 'rosarosa', type: 0, passwordConfirm: 'rosarosa' }).end(function (err, res) {
+
+        // basic checks
+        should.exist(res)
+        should.not.exist(err)
+        res.should.have.status(200)
+
+        // structure checks
+        res.body.should.be.a('object')
+        res.body.should.have.property('errors')
+        res.body.errors.should.be.a('array')
+        res.body.errors.should.have.length(1)
+
+        // error checks
+        res.body.errors[0].should.be.a('object')
+        res.body.errors[0].should.have.property('title')
+        res.body.errors[0].title.should.be.a('string')
+        res.body.errors[0].title.should.equal('response-validate')
+        res.body.errors[0].should.have.property('detail')
+        res.body.errors[0].detail.should.be.a('string')
+        res.body.errors[0].detail.should.equal('invalid database')
+        done()
+      })
+    })
+
+    it('should return an error if invalid database is specified', function (done) {
+      chai.request(app).post('/user/register').set('Database', 'üzügümülübrü').send({ mail: 'yolo@web.de', password: 'rosarosa', type: 0, passwordConfirm: 'rosarosa' }).end(function (err, res) {
+
+        // basic checks
+        should.exist(res)
+        should.not.exist(err)
+        res.should.have.status(200)
+
+        // structure checks
+        res.body.should.be.a('object')
+        res.body.should.have.property('errors')
+        res.body.errors.should.be.a('array')
+        res.body.errors.should.have.length(1)
+
+        // error checks
+        res.body.errors[0].should.be.a('object')
+        res.body.errors[0].should.have.property('title')
+        res.body.errors[0].title.should.be.a('string')
+        res.body.errors[0].title.should.equal('response-validate')
+        res.body.errors[0].should.have.property('detail')
+        res.body.errors[0].detail.should.be.a('string')
+        res.body.errors[0].detail.should.equal('invalid database')
+        done()
+      })
+    })
+
+    it('should return an error if no mail is specified', function (done) {
+      chai.request(app).post('/user/register').set('Database', 'KFA_phpentwicklung').send({ mail: null, password: 'rosarosa', type: 0, passwordConfirm: 'rosarosa' }).end(function (err, res) {
+
+        // basic checks
+        should.exist(res)
+        should.not.exist(err)
+        res.should.have.status(200)
+
+        // structure checks
+        res.body.should.be.a('object')
+        res.body.should.have.property('errors')
+        res.body.errors.should.be.a('array')
+        res.body.errors.should.have.length(1)
+
+        // error checks
+        res.body.errors[0].should.be.a('object')
+        res.body.errors[0].should.have.property('title')
+        res.body.errors[0].title.should.be.a('string')
+        res.body.errors[0].title.should.equal('response-validate')
+        res.body.errors[0].should.have.property('detail')
+        res.body.errors[0].detail.should.be.a('string')
+        res.body.errors[0].detail.should.equal('mail is not defined')
+        done()
+      })
+    })
+
+    it('should return an error if invalid mail is specified', function (done) {
+      chai.request(app).post('/user/register').set('Database', 'KFA_phpentwicklung').send({ mail: 'yolo@@web.de', password: 'rosarosa', type: 0, passwordConfirm: 'rosarosa' }).end(function (err, res) {
+
+        // basic checks
+        should.exist(res)
+        should.not.exist(err)
+        res.should.have.status(200)
+
+        // structure checks
+        res.body.should.be.a('object')
+        res.body.should.have.property('errors')
+        res.body.errors.should.be.a('array')
+        res.body.errors.should.have.length(1)
+
+        // error checks
+        res.body.errors[0].should.be.a('object')
+        res.body.errors[0].should.have.property('title')
+        res.body.errors[0].title.should.be.a('string')
+        res.body.errors[0].title.should.equal('response-validate')
+        res.body.errors[0].should.have.property('detail')
+        res.body.errors[0].detail.should.be.a('string')
+        res.body.errors[0].detail.should.equal('invalid mail')
+        done()
+      })
+    })
+
+    it('should return an error if no password is specified', function (done) {
+      chai.request(app).post('/user/register').set('Database', 'KFA_phpentwicklung').send({ mail: 'yolo@web.de', password: null, type: 0, passwordConfirm: 'rosarosa' }).end(function (err, res) {
+
+        // basic checks
+        should.exist(res)
+        should.not.exist(err)
+        res.should.have.status(200)
+
+        // structure checks
+        res.body.should.be.a('object')
+        res.body.should.have.property('errors')
+        res.body.errors.should.be.a('array')
+        res.body.errors.should.have.length(1)
+
+        // error checks
+        res.body.errors[0].should.be.a('object')
+        res.body.errors[0].should.have.property('title')
+        res.body.errors[0].title.should.be.a('string')
+        res.body.errors[0].title.should.equal('response-validate')
+        res.body.errors[0].should.have.property('detail')
+        res.body.errors[0].detail.should.be.a('string')
+        res.body.errors[0].detail.should.equal('password is not defined')
+        done()
+      })
+    })
+
+    it('should return an error if invalid password is specified', function (done) {
+      chai.request(app).post('/user/register').set('Database', null).send({ mail: 'yolo@web.de', password: 'abc', type: 0, passwordConfirm: 'rosarosa' }).end(function (err, res) {
+
+        // basic checks
+        should.exist(res)
+        should.not.exist(err)
+        res.should.have.status(200)
+
+        // structure checks
+        res.body.should.be.a('object')
+        res.body.should.have.property('errors')
+        res.body.errors.should.be.a('array')
+        res.body.errors.should.have.length(1)
+
+        // error checks
+        res.body.errors[0].should.be.a('object')
+        res.body.errors[0].should.have.property('title')
+        res.body.errors[0].title.should.be.a('string')
+        res.body.errors[0].title.should.equal('response-validate')
+        res.body.errors[0].should.have.property('detail')
+        res.body.errors[0].detail.should.be.a('string')
+        res.body.errors[0].detail.should.equal('password is too short')
+        done()
+      })
+    })
+
+    it('should return an error if passwordConfirm does not match password', function (done) {
+      chai.request(app).post('/user/register').set('Database', 'KFA_phpentwicklung').send({ mail: 'yolo@web.de', password: 'rosarosa', type: 0, passwordConfirm: 'roserose' }).end(function (err, res) {
+
+        // basic checks
+        should.exist(res)
+        should.not.exist(err)
+        res.should.have.status(200)
+
+        // structure checks
+        res.body.should.be.a('object')
+        res.body.should.have.property('errors')
+        res.body.errors.should.be.a('array')
+        res.body.errors.should.have.length(1)
+
+        // error checks
+        res.body.errors[0].should.be.a('object')
+        res.body.errors[0].should.have.property('title')
+        res.body.errors[0].title.should.be.a('string')
+        res.body.errors[0].title.should.equal('response-validate')
+        res.body.errors[0].should.have.property('detail')
+        res.body.errors[0].detail.should.be.a('string')
+        res.body.errors[0].detail.should.equal('passwords do not match')
+        done()
+      })
+    })
+
+    it('should return an error if no type is specified', function (done) {
+      chai.request(app).post('/user/register').set('Database', 'KFA_phpentwicklung').send({ mail: 'yolo@web.de', password: 'rosarosa', type: null, passwordConfirm: 'rosarosa' }).end(function (err, res) {
+
+        // basic checks
+        should.exist(res)
+        should.not.exist(err)
+        res.should.have.status(200)
+
+        // structure checks
+        res.body.should.be.a('object')
+        res.body.should.have.property('errors')
+        res.body.errors.should.be.a('array')
+        res.body.errors.should.have.length(1)
+
+        // error checks
+        res.body.errors[0].should.be.a('object')
+        res.body.errors[0].should.have.property('title')
+        res.body.errors[0].title.should.be.a('string')
+        res.body.errors[0].title.should.equal('response-validate')
+        res.body.errors[0].should.have.property('detail')
+        res.body.errors[0].detail.should.be.a('string')
+        res.body.errors[0].detail.should.equal('type is not defined')
+        done()
+      })
+    })
+
+    it('should return an error if invalid type is specified', function (done) {
+      chai.request(app).post('/user/register').set('Database', 'KFA_phpentwicklung').send({ mail: 'yolo@web.de', password: 'rosarosa', type: 'abc', passwordConfirm: 'rosarosa' }).end(function (err, res) {
+
+        // basic checks
+        should.exist(res)
+        should.not.exist(err)
+        res.should.have.status(200)
+
+        // structure checks
+        res.body.should.be.a('object')
+        res.body.should.have.property('errors')
+        res.body.errors.should.be.a('array')
+        res.body.errors.should.have.length(1)
+
+        // error checks
+        res.body.errors[0].should.be.a('object')
+        res.body.errors[0].should.have.property('title')
+        res.body.errors[0].title.should.be.a('string')
+        res.body.errors[0].title.should.equal('response-validate')
+        res.body.errors[0].should.have.property('detail')
+        res.body.errors[0].detail.should.be.a('string')
+        res.body.errors[0].detail.should.equal('invalid type')
+        done()
+      })
+    })
+
+    it('should return no error otherwise', function (done) {
+      chai.request(app).post('/user/register').set('Database', 'KFA_phpentwicklung').send({ mail: 'yolo@web.de', password: 'rosarosa', type: 0, passwordConfirm: 'rosarosa' }).end(function (err, res) {
+
+        // basic checks
+        should.exist(res)
+        should.not.exist(err)
+        res.should.have.status(200)
+
+        // structure checks
+        res.body.should.be.a('object')
+        res.body.should.have.property('errors')
+        res.body.errors.should.be.a('array')
+        res.body.errors.should.have.length(1)
+
+        // error checks
+        res.body.errors[0].should.be.a('object')
+        res.body.errors[0].should.have.property('title')
+        res.body.errors[0].title.should.be.a('string')
+        res.body.errors[0].title.should.equal('response-validate')
+        res.body.errors[0].should.have.property('detail')
+        res.body.errors[0].detail.should.be.a('string')
+        res.body.errors[0].detail.should.equal('none')
+        done()
+      })
+    })
+
+    it('should return error if already used mail is specified')
+  })
+
+  describe('GET /confirm', function () {
+
+    it('should return documentation', function (done) {
+      chai.request(app).get('/user/confirm').end(function (err, res) {
+        should.exist(res)
+        should.not.exist(err)
+        res.should.have.status(200)
+        res.body.should.be.a('object')
+        res.body.should.have.property('data')
+        res.body.data.should.be.a('object')
+        res.body.data.should.have.property('attributes')
+        res.body.data.attributes.should.be.a('object')
+        res.body.data.attributes.should.have.property('usage')
+        res.body.data.attributes.usage.should.be.a('object')
+        done()
+      })
+    })
+  })
+
+  describe('POST /confirm', function () {
+
+    before(function () {
+      chai.request(app).post('auth/login').send({ mail: 'yolo@web.de', password: 'rosa' })
+    })
+
+    it('should return an error if no database is specified', function (done) {
+      chai.request(app).post('/user/confirm').set('Database', null).send({}).end(function (err, res) {
+
+        // basic checks
+        should.exist(res)
+        should.not.exist(err)
+        res.should.have.status(200)
+
+        // structure checks
+        res.body.should.be.a('object')
+        res.body.should.have.property('errors')
+        res.body.errors.should.be.a('array')
+        res.body.errors.should.have.length(1)
+
+        // error checks
+        res.body.errors[0].should.be.a('object')
+        res.body.errors[0].should.have.property('title')
+        res.body.errors[0].title.should.be.a('string')
+        res.body.errors[0].title.should.equal('response-validate')
+        res.body.errors[0].should.have.property('detail')
+        res.body.errors[0].detail.should.be.a('string')
+        res.body.errors[0].detail.should.equal('invalid database')
+        done()
+      })
+    })
+
+    it('should return an error if invalid database is specified', function (done) {
+      chai.request(app).post('/user/confirm').set('Database', 'üzügümülübrü').send({}).end(function (err, res) {
+
+        // basic checks
+        should.exist(res)
+        should.not.exist(err)
+        res.should.have.status(200)
+
+        // structure checks
+        res.body.should.be.a('object')
+        res.body.should.have.property('errors')
+        res.body.errors.should.be.a('array')
+        res.body.errors.should.have.length(1)
+
+        // error checks
+        res.body.errors[0].should.be.a('object')
+        res.body.errors[0].should.have.property('title')
+        res.body.errors[0].title.should.be.a('string')
+        res.body.errors[0].title.should.equal('response-validate')
+        res.body.errors[0].should.have.property('detail')
+        res.body.errors[0].detail.should.be.a('string')
+        res.body.errors[0].detail.should.equal('invalid database')
+        done()
+      })
+    })
+
+    it('should return an error if no token is specified', function (done) {
+      chai.request(app).post('/user/confirm').set('Database', 'KFA_phpentwicklung').send({ token: null }).end(function (err, res) {
+
+        // basic checks
+        should.exist(res)
+        should.not.exist(err)
+        res.should.have.status(200)
+
+        // structure checks
+        res.body.should.be.a('object')
+        res.body.should.have.property('errors')
+        res.body.errors.should.be.a('array')
+        res.body.errors.should.have.length(1)
+
+        // error checks
+        res.body.errors[0].should.be.a('object')
+        res.body.errors[0].should.have.property('title')
+        res.body.errors[0].title.should.be.a('string')
+        res.body.errors[0].title.should.equal('response-validate')
+        res.body.errors[0].should.have.property('detail')
+        res.body.errors[0].detail.should.be.a('string')
+        res.body.errors[0].detail.should.equal('token is not defined')
+        done()
+      })
+    })
+
+    it('should return an error if invalid token is specified', function (done) {
+      chai.request(app).post('/user/confirm').set('Database', 'KFA_phpentwicklung').send({ token: 'abc', userID: 12 }).end(function (err, res) {
+
+        // basic checks
+        should.exist(res)
+        should.not.exist(err)
+        res.should.have.status(200)
+
+        // structure checks
+        res.body.should.be.a('object')
+        res.body.should.have.property('errors')
+        res.body.errors.should.be.a('array')
+        res.body.errors.should.have.length(1)
+
+        // error checks
+        res.body.errors[0].should.be.a('object')
+        res.body.errors[0].should.have.property('title')
+        res.body.errors[0].title.should.be.a('string')
+        res.body.errors[0].title.should.equal('response-validate')
+        res.body.errors[0].should.have.property('detail')
+        res.body.errors[0].detail.should.be.a('string')
+        res.body.errors[0].detail.should.equal('invalid token')
+        done()
+      })
+    })
+
+    it('should return an error if no userID is specified', function (done) {
+
+    })
+
+    it('should return an error if invalid userID is specified')
+
+    it('should return an error if token-holder has not enough rights')
+
+    it('should return no error otherwise')
+  })
+
+  describe('GET /upgrade', function () {
+
+    it('should return documentation', function (done) {
+      chai.request(app).get('/user/upgrade').end(function (err, res) {
+        should.exist(res)
+        should.not.exist(err)
+        res.should.have.status(200)
+        res.body.should.be.a('object')
+        res.body.should.have.property('data')
+        res.body.data.should.be.a('object')
+        res.body.data.should.have.property('attributes')
+        res.body.data.attributes.should.be.a('object')
+        res.body.data.attributes.should.have.property('usage')
+        res.body.data.attributes.usage.should.be.a('object')
+        done()
+      })
+    })
+  })
+
+  describe('POST /upgrade', function () {
+
+    it('should return an error if no database is specified')
+
+    it('should return an error if invalid database is specified')
+
+    it('should return an error if no token is specified')
+
+    it('should return an error if invalid token is specified')
+
+    it('should return an error if no userID is specified')
+
+    it('should return an error if invalid userID is specified')
+
+    it('should return an error if no type is specified')
+
+    it('should return an error if invalid type is specified')
+
+    it('should return an error if token-holder has not enough rights')
+
+    it('should return no error otherwise')
+  })
+
+  describe('GET /:id', function () {
+
+    it('should return an error if no database is specified')
+
+    it('should return an error if invalid database is specified')
+
+    it('should return an error if no token is specified')
+
+    it('should return an error if invalid token is specified')
+
+    it('should return an error if invalid id is specified')
+
+    it('should return an error if token-holder has not enough rights')
+
+    it('should return no error otherwise')
   })
 })

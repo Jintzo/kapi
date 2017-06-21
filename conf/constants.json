@@ -14,7 +14,8 @@
     "documentation": "documentation",
     "database": "response-database",
     "auth": "response-auth",
-    "validate": "response-validate"
+    "validate": "response-validate",
+    "register": "response-register"
   },
 
   "lengths": {
@@ -73,9 +74,22 @@
       "text": "no documentation specified for this route",
       "parameters": []
     },
-    "invalid_credentials": {
-      "text": "invalid credentials",
-      "parameters": []
+    "no_match": {
+      "text": "~things do not match",
+      "parameters": ["things"]
+    },
+    "in_use": {
+      "text": "~thing is already in use",
+      "parameters": ["thing"]
+    },
+    "not_reached": {
+      "text": "~thing could not be reached. Not in VPN?",
+      "parameters": ["thing"]
     }
+  },
+
+  "queries": {
+    "checkExistingUsers": "SELECT id FROM user WHERE mail = ? OR name = ?",
+    "addUser": "INSERT INTO user SET ?"
   }
 }
