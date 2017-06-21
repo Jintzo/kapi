@@ -101,6 +101,7 @@ module.exports = {
                     description: sampleDescription
                   })
                 }
+                oldID = rows[i].projectID
               }
 
               // add tangling project
