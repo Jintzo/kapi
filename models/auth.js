@@ -12,14 +12,13 @@ var databaseValidator = require('./../validators/database')
 module.exports = {
 
   /**
-   * verify that a userID-token-combination is still valid
-   * @param  {Integer}  userID       user ID
+   * verify that a token is still valid
    * @param  {String}   token        token
    * @param  {String}   databaseName name of the database
    * @param  {Function} callback     callback function
    * @return {void}
    */
-  verify: function (userID, token, databaseName, callback) {
+  verify: function (token, databaseName, callback) {
 
     // validate database name
     databaseValidator.name(databaseName, function (result) {
@@ -28,22 +27,24 @@ module.exports = {
         return
       }
 
-      // validate user ID
-      userValidator.id(userID, function (result) {
+      // validate token
+      authValidator.token(token, function (result) {
         if (errorFactory.containsError(result)) {
           callback(result)
           return
         }
 
-        // validate token
-        authValidator.token(token, function (result) {
-          if (errorFactory.containsError(result)) {
-            callback(result)
+        // pool database connection
+        database.pool(databaseName).getConnection(function (error, connection) {
+
+          // call back err if any
+          if (error) {
+            callback({ error })
             return
           }
 
-          // pool database connection
-          database.pool(databaseName).getConnection(function (error, connection) {
+          // check if entry exists in database
+          connection.query('SELECT * FROM session WHERE token = ?', [token], function (error, rows) {
 
             // call back err if any
             if (error) {
@@ -51,36 +52,26 @@ module.exports = {
               return
             }
 
-            // check if entry exists in database
-            connection.query('SELECT * FROM session WHERE userID = ? AND token = ?', [userID, token], function (error, rows) {
+            if (rows.length === 0) {
+              const error = errorFactory.generate(constants.errors.no_such, {thing: 'session'})
+              callback({ error })
+              return
+            } else {
 
-              // call back err if any
-              if (error) {
-                callback({ error })
-                return
-              }
+              // check if session is still valid
+              var nowDate = new Date()
+              var validUntilDate = new Date(Date.parse(rows[0].validUntil))
+              var timeDifference = validUntilDate.getTime() - nowDate.getTime()
 
-              if (rows.length === 0) {
-                const error = errorFactory.generate(constants.errors.no_such, {thing: 'session'})
+              if (timeDifference <= 0) {
+                const error = errorFactory.generate(constants.errors.invalid, { thing: 'session' })
                 callback({ error })
                 return
               } else {
-
-                // check if session is still valid
-                var nowDate = new Date()
-                var validUntilDate = new Date(Date.parse(rows[0].validUntil))
-                var timeDifference = validUntilDate.getTime() - nowDate.getTime()
-
-                if (timeDifference <= 0) {
-                  const error = errorFactory.generate(constants.errors.invalid, { thing: 'session' })
-                  callback({ error })
-                  return
-                } else {
-                  callback({ error: 'none' })
-                  return
-                }
+                callback({ error: 'none' })
+                return
               }
-            })
+            }
           })
         })
       })
