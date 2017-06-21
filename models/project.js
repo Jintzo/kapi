@@ -114,5 +114,65 @@ module.exports = {
         })
       })
     })
+  },
+
+  /**
+   * get all empty projects.
+   * @param  {String}   databaseName name of the database
+   * @param  {String}   token        user's token
+   * @param  {Function} callback     callback function
+   * @return {void}
+   */
+  getEmptyProjects: function (databaseName, token, callback) {
+
+    // validate database
+    databaseValidator.name(databaseName, function (result) {
+
+      if (errorFactory.containsError(result)) {
+        callback(result)
+        return
+      }
+
+      // validate token
+      authValidator.token(token, function (result) {
+
+        if (errorFactory.containsError(result)) {
+          callback(result)
+          return
+        }
+
+        // check that session is valid
+        auth.verify(token, databaseName, function (result) {
+
+          if (errorFactory.containsError(result)) {
+            callback(result)
+            return
+          }
+
+          // pool connection
+          database.pool(databaseName).getConnection(function (error, connection) {
+
+            // call back error if any
+            if (error) {
+              callback({ error })
+              return
+            }
+
+            // get all available samples in all available projects
+            connection.query('SELECT * FROM project WHERE id NOT IN (SELECT DISTINCT projectID FROM sample)', function (error, rows) {
+
+              // call back err if any
+              if (error) {
+                callback({ error })
+                return
+              }
+
+              // call back data
+              callback(rows)
+            })
+          })
+        })
+      })
+    })
   }
 }

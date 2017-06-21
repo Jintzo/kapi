@@ -18,4 +18,15 @@ router.get('/', function (req, res) {
   })
 })
 
+/**
+ * GET /empty
+ *
+ * get all empty projects from the specified database
+ */
+router.get('/empty', function (req, res) {
+  project.getEmpty(req.get('database'), req.get('token'), function (result) {
+    res.json(result)
+  })
+})
+
 module.exports = router
