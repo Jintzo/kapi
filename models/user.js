@@ -64,46 +64,42 @@ module.exports = {
                 return
               }
 
-              // pool connection
-              database.pool(databaseName).getConnection(function (error, connection) {
+              // get connection
+              let connection = database.getConnection(databaseName)
+
+              // check that mail and name are not in use
+              connection.query(constants.queries.checkExistingUsers, [mail, name], function (error, rows) {
 
                 // call back error if any
                 if (error) {
+                  connection.end()
                   callback({ error })
                   return
                 }
 
-                // check that mail and name are not in use
-                connection.query(constants.queries.checkExistingUsers, [mail, name], function (error, rows) {
+                if (rows.length !== 0) {
+                  connection.end()
+                  const error = errorFactory.generate(constants.errors.in_use, {thing: 'mail or username'})
+                  callback({ error })
+                  return
+                } else {
 
-                  // call back error if any
-                  if (error) {
-                    callback({ error })
-                    return
-                  }
+                  // calculate password hash
+                  var passwordHash = crypto.createHash('sha256').update(password).digest('hex')
 
-                  if (rows.length !== 0) {
-                    const error = errorFactory.generate(constants.errors.in_use, {thing: 'mail or username'})
-                    callback({ error })
-                    return
-                  } else {
+                  // insert new user into database
+                  connection.query(constants.queries.addUser, { name: name, mail: mail, passwordHash: passwordHash, confirmed: 0 }, function (error) {
+                    connection.end()
 
-                    // calculate password hash
-                    var passwordHash = crypto.createHash('sha256').update(password).digest('hex')
-
-                    // insert new user into database
-                    connection.query(constants.queries.addUser, { name: name, mail: mail, passwordHash: passwordHash, confirmed: 0 }, function (error) {
-
-                      // call back err if any
-                      if (error) {
-                        callback({ error })
-                        return
-                      } else {
-                        callback({ error: 'none' })
-                      }
-                    })
-                  }
-                })
+                    // call back err if any
+                    if (error) {
+                      callback({ error })
+                      return
+                    } else {
+                      callback({ error: 'none' })
+                    }
+                  })
+                }
               })
             })
           })

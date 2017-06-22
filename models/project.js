@@ -42,75 +42,68 @@ module.exports = {
             return
           }
 
-          // pool connection
-          database.pool(databaseName).getConnection(function (error, connection) {
+          // get connection
+          let connection = database.getConnection(databaseName)
 
-            // call back error if any
+          // get all available samples in all available projects
+          connection.query('SELECT sample.id AS sampleID, sample.name AS sampleName, sample.description AS sampleDescription, project.id AS projectID, project.name AS projectName FROM project INNER JOIN sample ON project.id = sample.projectID', function (error, rows) {
+            connection.end()
+
+            // call back err if any
             if (error) {
               callback({ error })
               return
             }
 
-            // get all available samples in all available projects
-            connection.query('SELECT sample.id AS sampleID, sample.name AS sampleName, sample.description AS sampleDescription, project.id AS projectID, project.name AS projectName FROM project INNER JOIN sample ON project.id = sample.projectID', function (error, rows) {
-              connection.release()
+            // go over rows
+            let resultData = []
+            let oldID = 0
+            let projectData = {}
+            for (var i = 0; i < rows.length; i++) {
 
-              // call back err if any
-              if (error) {
-                callback({ error })
-                return
-              }
+              // check if this is the next project
+              if (oldID !== rows[i].projectID) {
 
-              // go over rows
-              let resultData = []
-              let oldID = 0
-              let projectData = {}
-              for (var i = 0; i < rows.length; i++) {
+                // push old project data and start next project
+                if (projectData.name) {
+                  resultData.push(projectData)
+                }
 
-                // check if this is the next project
-                if (oldID !== rows[i].projectID) {
+                let sampleID = rows[i].sampleID
+                let sampleName = rows[i].sampleName
+                let sampleDescription = rows[i].sampleDescription
+                let projectID = rows[i].projectID
+                let projectName = rows[i].projectName
 
-                  // push old project data and start next project
-                  if (projectData.name) {
-                    resultData.push(projectData)
-                  }
-
-                  let sampleID = rows[i].sampleID
-                  let sampleName = rows[i].sampleName
-                  let sampleDescription = rows[i].sampleDescription
-                  let projectID = rows[i].projectID
-                  let projectName = rows[i].projectName
-
-                  projectData = {
-                    id: projectID,
-                    name: projectName,
-                    samples: [{
-                      id: sampleID,
-                      name: sampleName,
-                      description: sampleDescription
-                    }]
-                  }
-                } else {
-
-                  // add data to existing project
-                  let sampleID = rows[i].sampleID
-                  let sampleName = rows[i].sampleName
-                  let sampleDescription = rows[i].sampleDescription
-                  projectData.samples.push({
+                projectData = {
+                  id: projectID,
+                  name: projectName,
+                  samples: [{
                     id: sampleID,
                     name: sampleName,
                     description: sampleDescription
-                  })
+                  }]
                 }
-                oldID = rows[i].projectID
-              }
+              } else {
 
-              // add tangling project
-              if (projectData.name) {
-                resultData.push(projectData)
+                // add data to existing project
+                let sampleID = rows[i].sampleID
+                let sampleName = rows[i].sampleName
+                let sampleDescription = rows[i].sampleDescription
+                projectData.samples.push({
+                  id: sampleID,
+                  name: sampleName,
+                  description: sampleDescription
+                })
               }
-              callback(resultData)
-            })
+              oldID = rows[i].projectID
+            }
+
+            // add tangling project
+            if (projectData.name) {
+              resultData.push(projectData)
+            }
+            callback(resultData)
           })
         })
       })
@@ -150,28 +143,21 @@ module.exports = {
             return
           }
 
-          // pool connection
-          database.pool(databaseName).getConnection(function (error, connection) {
+          // get connection
+          let connection = database.getConnection(databaseName)
 
-            // call back error if any
+          // get all available samples in all available projects
+          connection.query('SELECT * FROM project WHERE id NOT IN (SELECT DISTINCT projectID FROM sample)', function (error, rows) {
+            connection.end()
+
+            // call back err if any
             if (error) {
               callback({ error })
               return
             }
 
-            // get all available samples in all available projects
-            connection.query('SELECT * FROM project WHERE id NOT IN (SELECT DISTINCT projectID FROM sample)', function (error, rows) {
-              connection.release()
-
-              // call back err if any
-              if (error) {
-                callback({ error })
-                return
-              }
-
-              // call back data
-              callback(rows)
-            })
+            // call back data
+            callback(rows)
           })
         })
       })
