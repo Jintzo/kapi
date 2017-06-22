@@ -47,6 +47,7 @@ module.exports = {
 
           // get all available samples in all available projects
           connection.query('SELECT sample.id AS sampleID, sample.name AS sampleName, sample.description AS sampleDescription, project.id AS projectID, project.name AS projectName FROM project INNER JOIN sample ON project.id = sample.projectID', function (error, rows) {
+            console.log('killing connection')
             connection.end()
 
             // call back err if any
@@ -148,6 +149,7 @@ module.exports = {
 
           // get all available samples in all available projects
           connection.query('SELECT * FROM project WHERE id NOT IN (SELECT DISTINCT projectID FROM sample)', function (error, rows) {
+            console.log('killing connection')
             connection.end()
 
             // call back err if any

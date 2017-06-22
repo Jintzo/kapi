@@ -25,7 +25,7 @@ module.exports = {
 
       // get connection
       let connection = database.getConnection(databaseName)
-      
+
       let size = ''
       let sampleCount = ''
       let particleCount = ''
@@ -35,6 +35,7 @@ module.exports = {
 
         // call back err if any
         if (error) {
+          console.log('killing connection')
           connection.end()
           callback({ error })
           return
@@ -47,6 +48,7 @@ module.exports = {
 
           // call back err if any
           if (error) {
+            console.log('killing connection')
             connection.end()
             callback({ error })
             return
@@ -56,6 +58,7 @@ module.exports = {
 
           // get particle count
           connection.query('SELECT COUNT(*) AS count FROM daten', function (error, rows) {
+            console.log('killing connection')
             connection.end()
 
             // call back err if any

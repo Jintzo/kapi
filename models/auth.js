@@ -39,6 +39,7 @@ module.exports = {
 
         // check if entry exists in database
         connection.query('SELECT * FROM session WHERE token = ?', [token], function (error, rows) {
+          console.log('killing connection')
           connection.end()
 
           // call back err if any
@@ -111,6 +112,7 @@ module.exports = {
 
           // get user ID
           connection.query('SELECT id FROM user WHERE name = ? AND passwordHash = ? AND confirmed = 1', [name, passwordHash], function (error, rows) {
+            console.log('killing connection')
             connection.end()
 
             // call back err if any
@@ -153,6 +155,7 @@ module.exports = {
 
       // call back err if any
       if (error) {
+        console.log('killing connection')
         connection.end()
         callback({ error })
         return
@@ -175,6 +178,7 @@ module.exports = {
 
           // call back err if any
           if (error) {
+            console.log('killing connection')
             connection.end()
             callback({ error })
             return
@@ -182,6 +186,7 @@ module.exports = {
 
           // get user data
           connection.query('SELECT * FROM user WHERE id = ?', [userID], function (error, rows) {
+            console.log('killing connection')
             connection.end()
 
             // call back err if any
@@ -208,6 +213,7 @@ module.exports = {
 
           // call back err if any
           if (error) {
+            console.log('killing connection')
             connection.end()
             callback({ error })
             return
@@ -215,6 +221,7 @@ module.exports = {
 
           // get user data
           connection.query('SELECT * FROM user WHERE id = ?', [userID], function (error, rows) {
+            console.log('killing connection')
             connection.end()
 
             // call back err if any

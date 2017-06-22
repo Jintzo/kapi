@@ -72,12 +72,14 @@ module.exports = {
 
                 // call back error if any
                 if (error) {
+                  console.log('killing connection')
                   connection.end()
                   callback({ error })
                   return
                 }
 
                 if (rows.length !== 0) {
+                  console.log('killing connection')
                   connection.end()
                   const error = errorFactory.generate(constants.errors.in_use, {thing: 'mail or username'})
                   callback({ error })
@@ -89,6 +91,7 @@ module.exports = {
 
                   // insert new user into database
                   connection.query(constants.queries.addUser, { name: name, mail: mail, passwordHash: passwordHash, confirmed: 0 }, function (error) {
+                    console.log('killing connection')
                     connection.end()
 
                     // call back err if any
