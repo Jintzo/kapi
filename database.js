@@ -5,6 +5,7 @@ var constants = require('./conf/constants')
 
 // generate connection pool
 let pool = function (database) {
+  console.log('creating connection pool')
   return mysql.createPool({
     connectionLimit: constants.database.max_connections,
     host: credentials.host,

@@ -41,6 +41,7 @@ module.exports = {
 
           // call back err if any
           if (error) {
+            connection.release()
             callback({ error })
             return
           }
@@ -52,6 +53,7 @@ module.exports = {
 
             // call back err if any
             if (error) {
+              connection.release()
               callback({ error })
               return
             }
@@ -60,6 +62,7 @@ module.exports = {
 
             // get particle count
             connection.query('SELECT COUNT(*) AS count FROM daten', function (error, rows) {
+              connection.release()
 
               // call back err if any
               if (error) {
