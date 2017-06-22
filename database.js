@@ -3,6 +3,7 @@ var mysql = require('mysql')
 var credentials = require('./conf/credentials')
 
 let getConnection = function (database) {
+  console.log('creating new connection')
   let connection = mysql.createConnection({
     host: credentials.host,
     user: credentials.user,
