@@ -14,4 +14,4 @@ let getConnection = function (database) {
   return connection
 }
 
-exports.connection = getConnection
+exports.getConnection = getConnection
