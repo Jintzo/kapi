@@ -239,7 +239,7 @@ module.exports = {
               project.samples = []
 
               // get samples
-              connection.query('SELECT id, description FROM sample WHERE projectID = ?', [id], function (error, sampleRows) {
+              connection.query('SELECT id, name, description FROM sample WHERE projectID = ?', [id], function (error, sampleRows) {
 
                 // call back err if any
                 if (error) {
@@ -254,6 +254,7 @@ module.exports = {
                   var sample = {}
 
                   sample.id = sampleRow.id
+                  sample.name = sampleRow.name
                   sample.description = sampleRow.description
                   sample.fractions = []
 
@@ -294,7 +295,8 @@ module.exports = {
                         }
 
                         // add image
-                        fraction.imageURL = imageRows[0].url
+                        fraction.imageURL = constants.general.imageBasePath + sample.name + '/' + imageRows[0].url
+                        fraction.imageURLThumbnail = constants.general.imageBasePath + sample.name + '/thumb/' + imageRows[0].url.replace('.jpg', '_thumb.jpg')
 
                         // push back fraction
                         sample.fractions.push(fraction)
