@@ -2,10 +2,13 @@
 var errorFactory = require('./../factories/error')
 var database = require('./../database')
 var auth = require('./auth')
+var constants = require('./../conf/constants')
+var async = require('async')
 
 // load needed validators
 var authValidator = require('./../validators/auth')
 var databaseValidator = require('./../validators/database')
+var projectValidator = require('./../validators/project')
 
 module.exports = {
 
@@ -147,7 +150,7 @@ module.exports = {
           // get connection
           let connection = database.getConnection(databaseName)
 
-          // get all available samples in all available projects
+          // get all projects that do not have any samples
           connection.query('SELECT * FROM project WHERE id NOT IN (SELECT DISTINCT projectID FROM sample)', function (error, rows) {
             console.log('killing connection')
             connection.end()
@@ -160,6 +163,160 @@ module.exports = {
 
             // call back data
             callback(rows)
+          })
+        })
+      })
+    })
+  },
+
+  /**
+   * get base data for a project
+   * @param  {Integer}   id           id of the project
+   * @param  {String}   databaseName name of the database
+   * @param  {String}   token        user's token
+   * @param  {Function} callback     callback function
+   * @return {void}
+   */
+  getProject: function (id, databaseName, token, callback) {
+
+    // validate database
+    databaseValidator.name(databaseName, function (result) {
+
+      if (errorFactory.containsError(result)) {
+        callback(result)
+        return
+      }
+
+      // validate token
+      authValidator.token(token, function (result) {
+
+        if (errorFactory.containsError(result)) {
+          callback(result)
+          return
+        }
+
+        // validate id
+        projectValidator.id(id, function (result) {
+
+          if (errorFactory.containsError(result)) {
+            callback(result)
+            return
+          }
+
+          // check that session is valid
+          auth.verify(token, databaseName, function (result) {
+
+            if (errorFactory.containsError(result)) {
+              callback(result)
+              return
+            }
+
+            // get connection
+            let connection = database.getConnection(databaseName)
+
+            // get base project data
+            var project = {}
+            connection.query('SELECT * FROM project WHERE id = ?', [id], function (error, projectRows) {
+
+              // call back err if any
+              if (error) {
+                connection.end()
+                callback({ error })
+                return
+              }
+
+              // check if that project exists
+              if (projectRows.length === 0) {
+                const error = errorFactory.generate(constants.errors.no_such, { thing: 'project' })
+                connection.end()
+                callback({ error })
+                return
+              }
+
+              // set project name and id
+              project.id = id
+              project.name = projectRows[0].name
+              project.samples = []
+
+              // get samples
+              connection.query('SELECT id, description FROM sample WHERE projectID = ?', [id], function (error, sampleRows) {
+
+                // call back err if any
+                if (error) {
+                  connection.end()
+                  callback({ error })
+                  return
+                }
+
+                async.forEachOf(sampleRows, function (sampleRow, i, innerCallback) {
+
+                  // generate sample object
+                  var sample = {}
+
+                  sample.id = sampleRow.id
+                  sample.description = sampleRow.description
+                  sample.fractions = []
+
+                  // get fractions
+                  connection.query('SELECT id, sieve, throughput FROM fraction WHERE sampleID = ?', [sample.id], function (error, fractionRows) {
+
+                    // call back err if any
+                    if (error) {
+                      connection.end()
+                      callback({ error })
+                      return
+                    }
+
+                    async.forEachOf(fractionRows, function (fractionRow, j, innerInnerCallback) {
+
+                      // generate fraction object
+                      var fraction = {}
+
+                      fraction.id = fractionRows[j].id
+                      fraction.sieve = fractionRows[j].sieve
+                      fraction.throughput = fractionRows[j].throughput
+
+                      // get main image
+                      connection.query('SELECT urlBinJPG AS url FROM image WHERE number = 1 AND fractionID = ?', [fraction.id], function (error, imageRows) {
+                        connection.end()
+
+                        // call back err if any
+                        if (error) {
+                          callback({ error })
+                          return
+                        }
+
+                        // check that image exists
+                        if (imageRows.length <= 0) {
+                          const error = errorFactory.generate(constants.errors.no_such, { thing: 'image' })
+                          callback({ error })
+                          return
+                        }
+
+                        // add image
+                        fraction.imageURL = imageRows[0].url
+
+                        // push back fraction
+                        sample.fractions.push(fraction)
+                      })
+                    }, function (error) {
+                      if (error) {
+                        callback({ error })
+                      } else {
+                        // push back sample
+                        project.samples.push(sample)
+                      }
+                    })
+                  })
+                }, function (error) {
+                  if (error) {
+                    callback({ error })
+                  } else {
+                    callback(project)
+                  }
+                })
+              })
+            })
           })
         })
       })
