@@ -23,32 +23,43 @@ module.exports = {
         return
       }
 
-      // pool connection
-      database.pool(databaseName).getConnection(function (error, connection) {
+      // get connection
+      let connection = database.getConnection(databaseName)
+
+      let size = ''
+      let sampleCount = ''
+      let particleCount = ''
+
+      // get database size
+      connection.query('SELECT table_schema, sum( data_length + index_length ) / 1024 / 1024 as size FROM information_schema.TABLES WHERE table_schema = ? GROUP BY table_schema', [databaseName], function (error, rows) {
 
         // call back err if any
         if (error) {
+          console.log('killing connection')
+          connection.end()
           callback({ error })
           return
         }
 
-        let size = ''
-        let sampleCount = ''
-        let particleCount = ''
+        size = Math.round(rows[0].size * 10) / 10
 
-        // get database size
-        connection.query('SELECT table_schema, sum( data_length + index_length ) / 1024 / 1024 as size FROM information_schema.TABLES WHERE table_schema = ? GROUP BY table_schema', [databaseName], function (error, rows) {
+        // get sample count
+        connection.query('SELECT COUNT(*) AS count FROM probe', function (error, rows) {
 
           // call back err if any
           if (error) {
+            console.log('killing connection')
+            connection.end()
             callback({ error })
             return
           }
 
-          size = Math.round(rows[0].size * 10) / 10
+          sampleCount = rows[0].count
 
-          // get sample count
-          connection.query('SELECT COUNT(*) AS count FROM probe', function (error, rows) {
+          // get particle count
+          connection.query('SELECT COUNT(*) AS count FROM daten', function (error, rows) {
+            console.log('killing connection')
+            connection.end()
 
             // call back err if any
             if (error) {
@@ -56,25 +67,13 @@ module.exports = {
               return
             }
 
-            sampleCount = rows[0].count
+            particleCount = rows[0].count
 
-            // get particle count
-            connection.query('SELECT COUNT(*) AS count FROM daten', function (error, rows) {
-
-              // call back err if any
-              if (error) {
-                callback({ error })
-                return
-              }
-
-              particleCount = rows[0].count
-
-              // return data
-              callback({
-                size, sampleCount, particleCount
-              })
-              return
+            // return data
+            callback({
+              size, sampleCount, particleCount
             })
+            return
           })
         })
       })

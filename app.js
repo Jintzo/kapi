@@ -42,6 +42,7 @@ app.use('/', require('./routes/index'))
 app.use('/auth', require('./routes/auth'))
 app.use('/databases', require('./routes/databases'))
 app.use('/user', require('./routes/user'))
+app.use('/project', require('./routes/project'))
 
 // 404 forwarding
 app.use(function (req, res, next) {

@@ -17,25 +17,10 @@ router.get('/', function (req, res) {
 
 /**
  * GET verify
- * returns documentation on how to use the verify route
+ * verifies a token
  */
 router.get('/verify', function (req, res) {
-  res.json({ usage: {
-    userID: '[userID]',
-    token: '[token]'
-  }})
-})
-
-/**
- * POST verify
- * verifies a userID-token-combination
- *
- * Header: database
- * Body: userID, token
- */
-router.post('/verify', function (req, res) {
-
-  auth.verify(req.body.userID, req.body.token, req.get('database'), function (result) {
+  auth.verify(req.get('token'), req.get('database'), function (result) {
     res.json(result)
   })
 })
