@@ -29,4 +29,15 @@ router.get('/empty', function (req, res) {
   })
 })
 
+/**
+ * GET /:id
+ *
+ * get data for a specific project
+ */
+router.get('/:id', function (req, res) {
+  project.getProject(req.params.id, req.get('database'), req.get('roken'), function (result) {
+    res.json(result)
+  })
+})
+
 module.exports = router
