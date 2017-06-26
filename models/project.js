@@ -218,6 +218,8 @@ module.exports = {
             var project = {}
             connection.query('SELECT * FROM project WHERE id = ?', [id], function (error, projectRows) {
 
+              console.log('got base project data')
+
               // call back err if any
               if (error) {
                 connection.end()
@@ -241,6 +243,8 @@ module.exports = {
               // get samples
               connection.query('SELECT id, description FROM sample WHERE projectID = ?', [id], function (error, sampleRows) {
 
+                console.log('got sample data, ' + sampleRows.length + ' samples to parse')
+
                 // call back err if any
                 if (error) {
                   connection.end()
@@ -249,6 +253,8 @@ module.exports = {
                 }
 
                 async.forEachOf(sampleRows, function (sampleRow, i, innerCallback) {
+
+                  console.log('parsing sample ' + i)
 
                   // generate sample object
                   var sample = {}
@@ -260,6 +266,8 @@ module.exports = {
                   // get fractions
                   connection.query('SELECT id, sieve, throughput FROM fraction WHERE sampleID = ?', [sample.id], function (error, fractionRows) {
 
+                    console.log('got fraction data, ' + fractionRows.length + ' fractions to parse')
+
                     // call back err if any
                     if (error) {
                       connection.end()
@@ -268,6 +276,8 @@ module.exports = {
                     }
 
                     async.forEachOf(fractionRows, function (fractionRow, j, innerInnerCallback) {
+
+                      console.log('parsing fraction ' + j)
 
                       // generate fraction object
                       var fraction = {}
@@ -278,6 +288,7 @@ module.exports = {
 
                       // get main image
                       connection.query('SELECT urlBinJPG AS url FROM image WHERE number = 1 AND fractionID = ?', [fraction.id], function (error, imageRows) {
+                        console.log('got image')
                         connection.end()
 
                         // call back err if any
