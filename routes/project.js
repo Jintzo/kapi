@@ -35,7 +35,7 @@ router.get('/empty', function (req, res) {
  * get data for a specific project
  */
 router.get('/:id', function (req, res) {
-  project.getProject(req.params.id, req.get('database'), req.get('roken'), function (result) {
+  project.getProject(req.params.id, req.get('database'), req.get('token'), function (result) {
     res.json(result)
   })
 })
