@@ -170,6 +170,77 @@ module.exports = {
   },
 
   /**
+   * get the samples of a specific project
+   * @param  {Integer}   id           id of the project
+   * @param  {String}    databaseName name of the database
+   * @param  {String}    token        user's token
+   * @param  {Function}  callback     callback functnion
+   * @return {void}
+   */
+  getSamples: function (id, databaseName, token, callback) {
+
+    var samples = []
+
+    // validate databaseName
+    databaseValidator.name(databaseName, function (result) {
+
+      if (errorFactory.containsError(result)) {
+        callback(result)
+        return
+      }
+
+      // validate token
+      authValidator.token(token, function (result) {
+
+        if (errorFactory.containsError(result)) {
+          callback(result)
+          return
+        }
+
+        // validate id
+        projectValidator.id(id, function (result) {
+
+          if (errorFactory.containsError(result)) {
+            callback(result)
+            return
+          }
+
+          // check that session is valid
+          auth.verify(token, databaseName, function (result) {
+
+            if (errorFactory.containsError(result)) {
+              callback(result)
+              return
+            }
+
+            // get connectino
+            let connection = database.getConnection(databaseName)
+
+            // get samples
+            connection.query('SELECT id, description FROM sample WHERE projectID = ?', [id], function (error, rows) {
+
+              if (error) {
+                callback(result)
+                return
+              }
+
+              async.forEachOf(rows, function (row, i, innerCallback) {
+
+              }, function (error) {
+                if (error) {
+                  callback({ error })
+                } else {
+                  callback(samples)
+                }
+              })
+            })
+          })
+        })
+      })
+    })
+  },
+
+  /**
    * get base data for a project
    * @param  {Integer}   id           id of the project
    * @param  {String}   databaseName name of the database
@@ -309,6 +380,7 @@ module.exports = {
 
                         // push back fraction
                         sample.fractions.push(fraction)
+                        innerInnerCallback()
                       })
                     }, function (error) {
                       if (error) {
@@ -316,6 +388,7 @@ module.exports = {
                       } else {
                         // push back sample
                         project.samples.push(sample)
+                        innerCallback()
                       }
                     })
                   })
