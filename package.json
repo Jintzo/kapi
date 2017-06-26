@@ -8,6 +8,7 @@
     "test": "nyc mocha test/root.js"
   },
   "dependencies": {
+    "async": "^2.5.0",
     "body-parser": "^1.16.0",
     "cors": "^2.8.3",
     "debug": "~2.2.0",
