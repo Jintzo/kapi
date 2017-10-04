@@ -1,91 +1,62 @@
 // load needed modules
-var constants = require('./../conf/constants')
-var errorFactory = require('./../factories/error')
-var validator = require('validator')
+const config = require('../config/config')
+const validator = require('validator')
+const TooLongException = require('../exceptions/TooLongException')
+const TooShortException = require('../exceptions/TooShortException')
+const InvalidException = require('../exceptions/InvalidException')
 
-module.exports = {
+class UserValidator {
 
-  /**
-   * validate an id.
-   *
-   * @param  {Object}   id       the id to be validated
-   * @param  {Function} callback callback function
-   * @return {void}
-   */
-  id: function (id, callback) {
-
-    // check that the id is defined
-    if (typeof id === 'undefined' || id === null) {
-      const error = errorFactory.generate(constants.errors.not_defined, {thing: 'id'})
-      callback({ error })
-      return
-    }
+  static id (id = '') {
 
     // convert to string
     id = id.toString()
 
-    // check that the id isn't shorter than 1 character
+    // check that length is >= min
     if (id.length < 1) {
-      const error = errorFactory.generate(constants.errors.too_short, {thing: 'id'})
-      callback({ error })
-      return
+      throw new TooShortException('id', id.length)
     }
 
-    // check that the id isn't longer than the default field length
-    if (id.length > constants.lengths.default) {
-      const error = errorFactory.generate(constants.errors.too_long, {thing: 'id'})
-      callback({ error })
-      return
+    // check that length is <= max
+    if (id.length > config.lengths.default) {
+      throw new TooLongException('id', id.length)
     }
 
-    // check that the id is an integer
+    // check that id is integer
     if (!validator.isInt(id)) {
-      const error = errorFactory.generate(constants.errors.wrong_format, {thing: 'id'})
-      callback({ error })
-      return
+      throw new InvalidException(`id '${id}' is not an integer`)
     }
+  }
 
-    // valid
-    callback({ error: 'none' })
-    return
-  },
-
-  /**
-   * validate a name.
-   *
-   * @param  {String}   name     the name to be validated
-   * @param  {Function} callback callback function
-   * @return {void}
-   */
-  name: function (name, callback) {
-
-    // check that name is defined
-    if (typeof name === 'undefined' || name === null) {
-      const error = errorFactory.generate(constants.errors.not_defined, {thing: 'name'})
-      callback({ error })
-      return
-    }
+  static name (name = '') {
 
     // convert to string
     name = name.toString()
 
-    // check that the name isn't shorter than 1 character
-    if (name.length < 1) {
-      const error = errorFactory.generate(constants.errors.too_short, {thing: 'name'})
-      callback({ error })
-      return
+    // check that length is >= min
+    if (name.length < config.lengths.user.name.min) {
+      throw new TooShortException('name', name.length, config.lengths.user.name.min)
     }
 
-    // check that the name isn't longer than the default field length
-    if (name.length > constants.lengths.default) {
-      const error = errorFactory.generate(constants.errors.too_long, {thing: 'name'})
-      callback({ error })
-      return
+    // check that length is <= max
+    if (name.length > config.lengths.default) {
+      throw new TooLongException('name', name.length, config.lengths.default)
     }
+  }
 
-    // valid
-    callback({ error: 'none' })
-  },
+  static mail (mail = '') {
+
+    // convert to string
+    mail = mail.toString()
+
+    // check that length is <= max
+    
+  }
+}
+
+module.exports = UserValidator
+
+module.exports = {
 
   /**
    * validate a mail

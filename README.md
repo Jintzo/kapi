@@ -9,7 +9,7 @@ In diesem Repo befindet sich die API der Kornformanalyse-Plattform, die als eige
 
 Es bietet sich an, mit `sudo npm install -g nodemon` nodemon zu installieren und dann statt `node bin/www` nun `nodemon bin/www` auszuführen, um live reloading zu ermöglichen.
  
-Die Anwendung erwartet in `conf/credentials.json` hinterlegte Zugangsdaten für die MySQL-Datenbank. Diese haben folgendes Format:
+Die Anwendung erwartet in `config/credentials.json` hinterlegte Zugangsdaten für die MySQL-Datenbank. Diese haben folgendes Format:
 ```json
 {
   "host": "[host]",

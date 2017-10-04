@@ -1,0 +1,44 @@
+{
+  "general": {
+    "name": "kapi",
+    "port": 3000,
+    "imageBasePath": "http://ibfs197.ibf.uni-karlsruhe.de/KF/Bilder/web/JPG/"
+  },
+
+  "database": {
+    "max_connections": 1000,
+    "available": ["development", "KFA_phpentwicklung", "KFA_zum_ersten_Auswerten", "KFA1_finger_weg"]
+  },
+
+  "lengths": {
+    
+    "default": {
+      "int": 11,
+      "text": 1000
+    },
+
+    "user": {
+      "name": {
+        "min": 3
+      }
+    }
+  },
+
+  "users": {
+    "types": {
+      "user": {
+        "name": "User",
+        "id": 0
+      },
+      "admin": {
+        "name": "Administrator",
+        "id": 1
+      }
+    }
+  },
+  
+  "queries": {
+    "checkExistingUsers": "SELECT id FROM user WHERE mail = ? OR name = ?",
+    "addUser": "INSERT INTO user SET ?"
+  }
+}
