@@ -1,6 +1,5 @@
 // load required modules
 const express = require('express')
-const path = require('path')
 const logger = require('morgan')
 const bodyParser = require('body-parser')
 
@@ -8,10 +7,7 @@ const bodyParser = require('body-parser')
 var app = express()
 
 // logging
-if (process.env.NODE_ENV !== 'test') {
-  app.use(logger('dev'))
-}
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(logger('dev'))
 
 // add headers
 app.use(function (req, res, next) {
@@ -24,25 +20,25 @@ app.use(function (req, res, next) {
 })
 
 // POST parsing
-app.use(bodyParser.json()) // support json encoded bodies
-app.use(bodyParser.urlencoded({ extended: true })) // support urlencoded bodies
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 
 // use external routes
 app.use('/', require('./routes/index'))
-app.use('/auth', require('./routes/auth'))
-app.use('/databases', require('./routes/databases'))
-app.use('/user', require('./routes/user'))
-app.use('/project', require('./routes/project'))
+// app.use('/auth', require('./routes/auth'))
+// app.use('/databases', require('./routes/databases'))
+// app.use('/user', require('./routes/user'))
+// app.use('/project', require('./routes/project'))
 
 // 404 forwarding
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   var err = new Error('Not Found')
   err.status = 404
   next(err)
 })
 
 // error handling
-app.use(function (err, req, res, next) {
+app.use((err, req, res, next) => {
   // return error
   res.status(err.status || 500)
   res.json({ error: err })

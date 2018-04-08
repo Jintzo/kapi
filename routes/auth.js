@@ -1,11 +1,11 @@
 // load required modules
-var express = require('express')
+const express = require('express')
 
 // set up router
-var router = express.Router()
+const router = express.Router()
 
 // load auth model
-var auth = require('./../models/auth')
+const Auth = require('./../models/auth')
 
 /**
  * GET /
